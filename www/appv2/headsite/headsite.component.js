@@ -46,7 +46,8 @@ angular.
   // disconnect
   $scope.connect= function(){
 	//get url redirection of the sso provider
-  	$http.get('/nodeTest/urlRedirect').
+//  	$http.get('/nodeTest/urlRedirect').
+  	$http.get('/node/urlRedirect').
             success(function(data) {
             $window.location.href = data[0];
           });

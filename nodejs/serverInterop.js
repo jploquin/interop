@@ -1,6 +1,14 @@
 // Nodejs Server for email sol interop app
 
 
+var querystring = require('querystring');
+var crypto = require('crypto');
+var jwt = require('jwt-simple');
+var moment = require('moment');
+
+
+var fs = require("fs");
+var pg = require("pg");
 
 //var dataMgt = require('./dataMgt');
 
@@ -15,8 +23,15 @@ app.use(bodyParser.json());
 var fs = require("fs");
 var pg = require("pg");
 var Promise = require('es6-promise').Promise;
+app.set('jwtTokenSecret','melissa');
 
 var connectionString = process.env.DATABASE_URL;
+//var myServer="54.149.55.192";
+//var path="/interop/appv1/#!/login";
+var login=process.env.LOGINURL;
+var rand='12345';
+var secret='nuitdebout';
+var discourseRootUrl='https://forum.etalab.gouv.fr';
 // ||
 //'postgres://interop:fanfaron@localhost:5432/interop';
 
@@ -683,6 +698,105 @@ app.put('//deleteTestCase', function(req, res) {
         );
     });
 });
+
+
+//get url redirection for forum etalab discourse as sso provider
+app.get('//urlRedirect', function (req, res) {
+    var results = [];
+    var nonce = crypto.createHash('sha1').update(rand).digest("hex");
+
+    var payload = "";
+    var returnUrl = login;//"http://"+myServer+path;
+    payload=encodeURIComponent('nonce')+"="+encodeURIComponent(nonce);
+    payload+="&";
+    payload+=encodeURIComponent("return_sso_url")+"="+encodeURIComponent(returnUrl);
+    var payload_b64=new Buffer(payload).toString('base64');
+//    payload_b64=encodeURIComponent(payload_b64);
+    var signature = crypto.createHmac('sha256',secret).update(payload_b64).digest('hex');
+  
+     var hmac = crypto.createHmac('sha256',secret);
+    hmac.setEncoding('hex');
+    hmac.write(payload_b64);
+    hmac.end();
+    signature=hmac.read(); 
+console.log('sso'+payload_b64);
+console.log('sig'+signature);
+
+    var returnUrl = discourseRootUrl+'/session/sso_provider?sso='+payload_b64+'&sig='+signature;
+    results.push(returnUrl);
+
+
+return res.json(results);
+
+});
+
+//get url redirection 
+app.get('//getSSOLoginInfo', function (req, res) {
+    var results = [];
+    
+    var sig=req.param('sig');
+
+    var b64string = req.param('sso');
+    var buf = new Buffer(b64string,'base64');//Buffer.from(b64string, 'base64'); // Ta-da
+    
+    var bufdec = decodeURIComponent(b64string);
+    var sig2 = crypto.createHmac('sha256',secret).update(b64string).digest('hex');
+
+/*    // validate sso
+    if(sig2 !== sig){
+          console.log (sig);
+          console.log (sig2);
+          return res.status(500).json({ success: false, data: 'Authentication failed, bad signature'});
+    }
+    else{
+*/      
+      console.log('sso:'+b64string);
+      console.log('ssodecodé:'+buf);
+      var sbuf = buf.toString();
+      var myDecode = querystring.parse(buf);
+ //     console.log('parsing obj:'+querystring.parse('foo=2&fooa=3').toString());
+      console.log('parsing obj:'+parseQuery(sbuf));
+/*    }
+*/
+
+    myReturn = parseQuery(sbuf);
+    var expire=moment().add('days',7).valueOf();
+    myReturn.expire = expire;
+    var token=jwt.encode(myReturn,app.get('jwtTokenSecret'));
+    
+    myReturn.token=token;
+    console.log(myReturn);
+    results.push(myReturn);
+    //todo: insert user
+    //results.push('yy');
+   //console.log('ret='+results);
+
+return res.json(myReturn);
+
+
+});
+
+//utils
+function parseQuery(search) {
+
+    var args = search.substring(1).split('&');
+    var argsParsed = {};
+    var i, arg, kvp, key, value;
+    for (i=0; i < args.length; i++) {
+        arg = args[i];
+        if (-1 === arg.indexOf('=')) {
+            argsParsed[decodeURIComponent(arg).trim()] = true;
+        }
+        else {
+            kvp = arg.split('=');
+            key = decodeURIComponent(kvp[0]).trim();
+            value = decodeURIComponent(kvp[1]).trim();
+            argsParsed[key] = value;
+        }
+    }
+    return argsParsed;
+}
+
 
 
 var server = app.listen(8080, function () {

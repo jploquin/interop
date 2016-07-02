@@ -18,7 +18,8 @@ angular.
 //   $scope.loading++;
 $rootScope.globalLoading++;
  	//get sso login info + token
-  	$http.get('/nodeTest/getSSOLoginInfo?sso='+$routeParams.sso+'&sig='+$routeParams.sig).
+//  	$http.get('/nodeTest/getSSOLoginInfo?sso='+$routeParams.sso+'&sig='+$routeParams.sig).
+  	$http.get('/node/getSSOLoginInfo?sso='+$routeParams.sso+'&sig='+$routeParams.sig).
             success(function(data) {
             $rootScope.globalLoading--;
 //            $scope.loading--;
