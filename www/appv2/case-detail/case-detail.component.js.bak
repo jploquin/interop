@@ -1,0 +1,145 @@
+'use strict';
+/* 
+	Case detail management.
+	Manage case modifications and results modifications.
+*/
+
+
+
+//Calculate the position to make the changeresult div appear
+function myPosition(element, thediv){
+	var parentDiv = document.getElementById("divDetail").offsetParent;
+        var cx = 0;
+	var cy = element.clientHeight;
+	var el2 = element;
+	var trace="";
+	while (el2 && el2 != parentDiv){
+                if (el2.offsetLeft) cx += el2.offsetLeft;
+                if (el2.offsetTop) cy += el2.offsetTop;
+                el2 = el2.offsetParent;
+ 
+	}
+    return { top: cy, left: cx };
+}
+
+ 
+angular.
+  module('caseDetail').
+  component('caseDetail', {
+    templateUrl: 'case-detail/case-detail.template.html',
+    controller: ['$routeParams','$http','$rootScope','$scope','$window',
+      function caseDetailController($routeParams,$http,$rootScope, $scope,$window) {
+        this.caseId = $routeParams.caseId;
+	var self = this;
+
+	$scope.loading=0;
+	$scope.loadingChangeResult=0;
+	$scope.posTop="0px";
+ 	$scope.posLeft="0px";
+        $scope.loading++;
+        self.matrixResults= new Array(64);//[64][64];//self.products.length][self.products.length];
+	var i,j;
+	    for (i=0;i<64;i++){
+	      self.matrixResults[i]=new Array(64);
+	      for (j=0;j<64;j++)
+		self.matrixResults[i][j]=-1;
+	}
+	//get header details
+  	$http.get('/node/HeaderCase?caseId='+this.caseId+'&token='+
+			$window.localStorage['jwt']).
+            success(function(data) {
+            self.headercase = data;
+	    $scope.loading --;
+          });
+
+
+        $scope.loading++;
+	//get case details
+  	$http.get('/node/Case?caseId='+this.caseId+'&token='+
+			$window.localStorage['jwt']).
+            success(function(data) {
+            self.case = data;
+	    $scope.loading --;
+          });
+
+        $scope.loading++;
+	//get product list to construct the matrix of results: 
+  	$http.get('/node/listProducts?token='+
+			$window.localStorage['jwt']).
+            success(function(data) {
+            self.products = data;
+	    var i=0;
+	    for ( i=0;i<self.products.length;i++)
+		self.products[i].rank = i+1;
+	    $scope.loading --;
+          });
+
+	//get result list to construct the matrix of results: 
+  	$http.get('/node/listResults?caseId='+this.caseId+'&token='+
+			$window.localStorage['jwt']).
+            success(function(data) {
+            self.results = data;
+	    var i=0;
+	    var j=0;
+	    for (j=0;j<self.results.length;j++){
+		var monp1 = self.results[j].product_1_id;
+		var monp2 = self.results[j].product_2_id;
+		//only take the first result, it is the last and so the official one.
+		if (self.matrixResults[monp1][monp2]==-1)
+			self.matrixResults[monp1][monp2]=self.results[j].result;
+	    } 
+         });
+
+	//cell clicked
+	$scope.changeResult = function($rank1,$rank2) {
+	  if ($rank1 != $rank2){
+		var myName = 'changeResult'+$rank1+'::'+$rank2;
+		var target = document.getElementById(myName);
+		var box = target.getBoundingClientRect();
+		var top = '';
+		
+		self.product1 = self.products[$rank1-1];
+		self.product2 = self.products[$rank2-1];
+		//position the div under the cell
+		var myDiv = document.getElementById("divChangeResult");
+		var center =  myPosition(target,myDiv);
+		$scope.posTop=center.top+"px";
+		$scope.posLeft=center.left+"px";
+
+	  	$scope.writeNewResult=false;
+		$scope.oldResults=false;
+		if (self.matrixResults[$rank1-1][$rank2-1]==-1)
+		  $scope.writeNewResult=true;
+		else {
+		  $scope.oldResults=true;
+	
+		}
+		$scope.loadingChangeResult++;
+
+	  }
+  	};
+
+	$scope.closeDiv= function($rank1,$rank2) {
+		$scope.loadingChangeResult=0;
+	};
+	$scope.getClassResult = function ($rank1,$rank2) {
+	  var ret="cellResult icon-cross";
+	  if ($rank1 != $rank2){
+	   switch (	self.matrixResults[$rank1-1][$rank2-1]){
+		case -1: 
+		  ret = "cellResult icon-question";
+		  break;
+		case 0: 
+		  ret = "cellResult icon-red";
+		  break;
+		case 1: 
+		  ret = "cellResult icon-green";
+		  break;
+	   }
+	  }
+	  return ret;
+	};
+
+      }
+    ]
+  });

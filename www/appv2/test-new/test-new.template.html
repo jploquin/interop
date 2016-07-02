@@ -1,0 +1,30 @@
+<p> Create a new test case from '{{$ctrl.category.name}}' category:</p>
+<form name="myForm" ng-submit="$ctrl.save()" novalidate>
+
+<table>
+<tr>
+<td>Name:  </td><td><input style='width:300px' type="text" name="" ng-model=$ctrl.name>
+</td>
+</tr>
+<tr>
+<td> Description:</td>
+<td>
+<textarea rows="4" cols="130" ng-model=$ctrl.description>
+
+</textarea>
+ </td>
+</tr>
+
+<tr>
+<td> Expected results:</td>
+<td>
+<textarea rows="4" cols="130" ng-model=$ctrl.expected_result>
+</textarea>
+ </td>
+</tr>
+</table>
+
+    <div ng-messages="myForm.nom.$error" ng-messages-include="erreurs.html"></div>
+    <input type="submit" value="Create" />
+</form>
+    

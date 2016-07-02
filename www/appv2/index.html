@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" ng-app="interopApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Email systems interoperability</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="app.css" />
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="app.module.js"></script>
+    <script src="app.config.js"></script>
+    <script src="phone-list/phone-list.module.js"></script>
+    <script src="phone-list/phone-list.component.js"></script>
+    <script src="phone-detail/phone-detail.module.js"></script>
+    <script src="phone-detail/phone-detail.component.js"></script>
+    <script src="product-list/product-list.module.js"></script>
+    <script src="product-list/product-list.component.js"></script>
+    <script src="theme-list/theme-list.module.js"></script>
+    <script src="theme-list/theme-list.component.js"></script>
+    <script src="theme-detail/theme-detail.module.js"></script>
+    <script src="theme-detail/theme-detail.component.js"></script>
+    <script src="product-detail/product-detail.module.js"></script>
+    <script src="product-detail/product-detail.component.js"></script>
+    <script src="case-detail/tst.js"></script>
+    <script src="case-detail/case-detail.module.js"></script>
+    <script src="case-detail/case-detail.component.js"></script>
+    <script src="dashboard/dashboard.module.js"></script>
+    <script src="dashboard/dashboard.component.js"></script>
+    <script src="login/login.module.js"></script>
+    <script src="login/login.component.js"></script>
+    <script src="headsite/headsite.module.js"></script>
+    <script src="headsite/headsite.component.js"></script>
+    <script src="theme-new/theme-new.module.js"></script>
+    <script src="theme-new/theme-new.component.js"></script>
+    <script src="test-new/test-new.module.js"></script>
+    <script src="test-new/test-new.component.js"></script>
+    <script src="returnSSO/returnSSO.module.js"></script>
+    <script src="returnSSO/returnSSO.component.js"></script>
+  </head>
+  <body>
+
+<div id="mydivGlobal"  ng-show="globalLoading" >
+    <img src="/interop/img/loading.gif" class="ajax-loader"/>
+</div>
+
+    <headsite></headsite>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-2" style="width:25%">
+	<p class="subtitle"> Categories </p>
+	<theme-list></theme-list>
+	<hr>
+	<p class="subtitle"> Solutions </p>
+	<product-list></product-list>
+	</div>
+     <div class="col-md-10" style="width:74%;border-left:1px solid grey">
+
+    <div ng-view></div>
+   </div>
+    </div>	
+    </div>
+    
+  </body>
+</html>

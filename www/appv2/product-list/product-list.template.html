@@ -1,0 +1,15 @@
+   <div>
+      <!--Body content-->
+     <ul class="themes">
+        <li 	ng-repeat="product in $ctrl.products" 
+		class="listTheme">
+    <a href="#!/products/{{product.product_id}}">{{product.name}}</a>
+
+	  <small> by {{product.provider}}</small>
+          <!-- a href="#!/products/{{product.product_id}}">{{product.name}}</a--!>
+        </li>
+      </ul>
+
+      <!-- a style="" class="icon icon-add" href="#!/newProduct/">New solution</a --!>
+
+    </div>

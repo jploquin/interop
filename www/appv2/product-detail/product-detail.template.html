@@ -1,0 +1,37 @@
+<div id="mydiv"  ng-show="loading" >
+    <img src="/interop/img/loading.gif" class="ajax-loader"/>
+</div>
+<div>
+<p class="subtitle"> Product<hr> </p>
+<table>
+<tr>
+<td>Name:  </td><td><input type="text" size=53 maxlength=32  name="country" ng-model=$ctrl.product.name>
+</td>
+</tr>
+<tr>
+<td> Description:</td>
+<td>
+<textarea rows="4" cols="130" ng-model=$ctrl.product.description>
+</textarea>
+ </td>
+</tr>
+<tr>
+<td>Provider:  </td><td><input size=53  type="text" name="country" value={{$ctrl.product.provider_name}} readonly>
+</td>
+</tr>
+<tr>
+<td>Access url:  </td><td><input size=64 type="text" maxlength=256 name="country" ng-model=$ctrl.product.product_access_url>
+<a target="_blank" href={{$ctrl.product.product_access_url}}> {{$ctrl.product.product_access_url}} </a>
+</td>
+</tr>
+<tr>
+<td> Access instruction:</td>
+<td>
+<textarea rows="4" cols="130" maxlength=1024 ng-model=$ctrl.product.product_access>
+</textarea>
+ </td>
+</tr>
+</table>
+<a style="" ng-click = "updateProduct()" class="icon icon-save" href="">Save</a>
+
+</div>

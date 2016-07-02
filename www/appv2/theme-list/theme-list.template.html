@@ -1,0 +1,13 @@
+   <div>
+      <!--Body content-->
+
+      <ul class="themes">
+        <li 	ng-repeat="theme in $ctrl.themes | filter:$ctrl.query | orderBy:$ctrl.orderProp" 
+		class="listTheme">
+          <a href="#!/themes/{{theme.test_category_id}}">{{theme.name}}</a>
+        </li>
+      </ul>
+
+      <!-- a style="" class="icon icon-add" href="#!/newTheme/">New category</a--!>
+
+    </div>

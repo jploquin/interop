@@ -1,0 +1,107 @@
+<div id="mydiv"  ng-show="loading" >
+    <img src="/interop/img/loading.gif" class="ajax-loader"/>
+</div>
+
+
+<div id="divDetail">
+
+  <div id="divChangeResult"  ng-show="loadingChangeResult" 
+  class="divResult"
+  ng-style="{'top':posTop,'left':posLeft}">
+
+    <div class="headDialog">
+      <table style='width:100%'>
+      <tr><td style=''>
+      <p> from {{$ctrl.product1.name}}
+      <br> to {{$ctrl.product2.name}} </p>
+      </td>
+      <td class='icon-close' style='width:16px' ng-click="closeDiv()" valign='top'>&nbsp;</td>
+      </tr>
+      </table>
+    </div>
+<div class='newResult'>
+    <div id="newResult"  ng-show="writeNewResult">
+      <p><textarea style='width:90%; margin:5px' placeholder="Comments ..." ng-model="$ctrl.theComment"></textarea></p>
+      <table><tr>
+      <td style='width:80%'> Click to record the test result:</td>
+      <td valign='middle' style='width:30px;text-align:center;font-size:8pt' ng-click="writeResult(1)" class='icon-green'>OK</td>
+      <td valign='middle' style='width:30px;text-align:center;font-size:8pt' ng-click="writeResult(0)" class='icon-red'>KO</td>
+      </tr>
+      </table>
+    </div>
+
+    <div id='askNewResult' ng-hide="writeNewResult" ng-click="clickNewResult()"><a>New result</a>
+    </div>
+
+    <div id="oldResults" >
+      <hr>
+      <table style='width:98%'>
+      <tr  ng-repeat="res in $ctrl.myRes">
+      <td style='width:16%'> <div style='' ng-class="{0:'little-icon-red', 1:'little-icon-green'}[res.result]">&nbsp;</div> </td>
+      <td style='border-bottom:solid 1px grey'> by <b>{{res.username}}</b>, {{res.datecre.substring(0,10)}} <br>{{res.description}}</td>
+      <td style='width:10px' title='Supprimer'  ng-click='deleteResult(res.test_result_id)'><img style='cursor:pointer' src='../img/delete-icon.png'></img></td>
+      </tr>
+      </table>
+    </div>
+</div>    
+  </div>
+ 
+<p class="subtitle"> Test case <hr> </p>
+<table>
+<tr>
+<td>Name:  </td><td><input style='width:300px' maxlength=32 type="text" name="" ng-model=$ctrl.headercase.name>
+</td>
+</tr>
+<tr>
+<td> Description:</td>
+<td>
+<textarea rows="4" maxlength=512 cols="130" ng-model = $ctrl.case.description>
+</textarea>
+ </td>
+</tr>
+
+<tr>
+<td> Expected results:</td>
+<td>
+<textarea rows="4" cols="130" maxlength=512 ng-model = $ctrl.case.expected_result>
+</textarea>
+ </td>
+</tr>
+</table>
+<table>
+<tr>
+<td style='width:150px'><a style="" ng-click = "updateTestCase()" class="icon icon-save" href="">Save</a></td>
+<td><a style="" ng-click = "deleteTestCase()" class="icon icon-delete" href="">Delete</a></td>
+</tr>
+</table>
+
+<hr>
+<p> Results <small>(click on a cell to see or change the result)</small>:</p> 
+<div>
+
+
+<div style="float:top"  ng-hide="loading"> 
+<table>
+<tr>  
+<th></th>
+<th class="firstRowResult" ng-repeat="product0 in $ctrl.products" title = "{{product0.name}}"> {{product0.rank}}</th>
+</tr>
+<tr  ng-repeat="product1 in $ctrl.products">
+<td class="firstColResult"> {{product1.rank}}. {{product1.name}} </td>
+<td id="changeResult{{product1.rank}}::{{product2.rank}}" class="tdResult" ng-repeat="product2 in $ctrl.products">
+
+<div ng-class="getClassResult({{product1.rank}},{{product2.rank}})" 
+ng-click = 'changeResult(product1.rank,product2.rank)'>
+</div>
+
+</td>
+</tr>
+</table>
+</div>
+</div>
+
+
+<div id='dummy' style='width:100%;height:300px;'></div>
+
+
+</div>

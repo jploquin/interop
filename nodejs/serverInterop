@@ -1,0 +1,13 @@
+[Service]
+ExecStart=/nodejs/bin/node /app/serverInterop.js
+Restart=always
+StandardOutput=syslog
+SyslogIdentifier=serverInterop
+Environment=PATH=/nodejs/bin
+Environment=NODE_ENV=production
+Environment=PORT=8080
+Environment=DATABASE_URL=postgres://interop:fanfaron@interop-postgres:5432/interop
+
+[install]
+WantedBy=multi-user.target
+

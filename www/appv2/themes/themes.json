@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1, 
+        "name": "Echange de mails", 
+        "desc": "Echanges simples de mails"
+    }, 
+   {
+        "id": 3, 
+        "name": "Utilisation de l'agenda", 
+        "desc": "Echanges simples de mails"
+    }, 
+    {
+        "id": 4, 
+        "name": "Messagerie instantanée", 
+        "desc": "Echanges simples de mails"
+    }, 
+    {
+        "id": 5, 
+        "name": "Accessibilité", 
+        "desc": "Echanges simples de mails"
+   }
+]
