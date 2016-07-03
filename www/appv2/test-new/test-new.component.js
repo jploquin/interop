@@ -22,24 +22,34 @@ angular.
 
  // write the new test case
  this.save= function(){
-     	var dataObj = {
-        test_category_id: self.categoryId,
-        name: self.name,
-				description : self.description,
-        expected_result: self.expected_result
-		};	
+     if ($window.sessionStorage['myLogin']==null){
+       alert("You must be connected");
+     }
+       else{
+          var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
    
- $http({
-            url: '/node/saveTestCase',
-            method: "POST",
-            data: dataObj,
-            headers: {'Content-Type': 'application/json'}
-        }).success(function (data, status, headers, config) {
-              var myNewTestCase = data; 
-              $window.location.href = "#!/case/"+data[0].test_header_case_id;             
-            }).error(function (data, status, headers, config) {
- 			          alert( "failure: " + JSON.stringify({data: data}));
-            });  
+       	var dataObj = {
+          test_category_id: self.categoryId,
+          name: self.name,
+  				description : self.description,
+          expected_result: self.expected_result,
+          username: myObj.username,
+          token: myObj.token
+  
+  		};	
+     
+   $http({
+              url: '/node/saveTestCase',
+              method: "POST",
+              data: dataObj,
+              headers: {'Content-Type': 'application/json'}
+          }).success(function (data, status, headers, config) {
+                var myNewTestCase = data; 
+                $window.location.href = "#!/case/"+data[0].test_header_case_id;             
+              }).error(function (data, status, headers, config) {
+   			          alert( "failure: " + data );
+              });  
+  }
   }
   
 

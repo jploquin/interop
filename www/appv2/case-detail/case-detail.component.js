@@ -229,87 +229,119 @@ angular.
 
   // write a new result
   $scope.writeResult= function(testResult){
-    	var dataObj = {
-				description : self.theComment,
-        product_1_id: self.product1.product_id,
-        product_2_id: self.product2.product_id,
-        test_header_case_id: self.caseId,
-        result: testResult
-		};	
-   
- $http({
-            url: '/node/saveResult',
-            method: "POST",
-            data: dataObj,
-            headers: {'Content-Type': 'application/json'}
-        }).success(function (data, status, headers, config) {
-              var r1 = getProductRank(self.products,self.product1.product_id);
-              var r2 = getProductRank(self.products,self.product2.product_id);
-              self.matrixResults[r1][r2]=testResult;
-        			$scope.message = data;
-              //put the new result at first
-              self.results.splice(0,0,data[0]);
-              $scope.loadingChangeResult=0;
-            }).error(function (data, status, headers, config) {
- 			          alert( "failure: " + JSON.stringify({data: data}));
-            });  
+     if ($window.sessionStorage['myLogin']==null){
+       alert("You must be connected");
+     }
+     else{
+        var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
+      	var dataObj = {
+  				description : self.theComment,
+          product_1_id: self.product1.product_id,
+          product_2_id: self.product2.product_id,
+          test_header_case_id: self.caseId,
+          result: testResult,
+          username: myObj.username,
+          token: myObj.token
+  		};	
+     
+       $http({
+              url: '/node/saveResult',
+              method: "POST",
+              data: dataObj,
+              headers: {'Content-Type': 'application/json'}
+          }).success(function (data, status, headers, config) {
+                var r1 = getProductRank(self.products,self.product1.product_id);
+                var r2 = getProductRank(self.products,self.product2.product_id);
+                self.matrixResults[r1][r2]=testResult;
+          			$scope.message = data;
+                //put the new result at first
+                self.results.splice(0,0,data[0]);
+                $scope.loadingChangeResult=0;
+              }).error(function (data, status, headers, config) {
+   			          alert( "failure: " + JSON.stringify({data: data}));
+              });  
+     }
   };
 
   // delete a result
   $scope.deleteResult= function(testResultId){
-    	var dataObj = {
-				test_result_id : testResultId
-		};	
+     if ($window.sessionStorage['myLogin']==null){
+       alert("You must be connected");
+     }
+     else{
+        var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
+      	var dataObj = {
+				test_result_id : testResultId,
+          username: myObj.username,
+          token: myObj.token
+		    };	
    
-   $http({
-            url: '/node/deleteResult',
-            method: "PUT",
-            data: dataObj,
-            headers: {'Content-Type': 'application/json'}
-        }).success(function (data, status, headers, config) {
-               var myRes = getResultFromId(self.results,testResultId);
-               removeResultFromTab(testResultId,self.myRes);
-               removeResultFromTab(testResultId,self.results);
-               recalculateViewResults(self.products, self.results, self.matrixResults, myRes); 
-            }).error(function (data, status, headers, config) {
- 			          alert( "failure: " + JSON.stringify({data: data}));
-            });  
+         $http({
+                  url: '/node/deleteResult',
+                  method: "PUT",
+                  data: dataObj,
+                  headers: {'Content-Type': 'application/json'}
+              }).success(function (data, status, headers, config) {
+                     var myRes = getResultFromId(self.results,testResultId);
+                     removeResultFromTab(testResultId,self.myRes);
+                     removeResultFromTab(testResultId,self.results);
+                     recalculateViewResults(self.products, self.results, self.matrixResults, myRes); 
+                  }).error(function (data, status, headers, config) {
+       			          alert( "failure: " + JSON.stringify({data: data}));
+                  });  
+     }
   };
   
   
   
   // update test case
   $scope.updateTestCase= function(){
-     	var dataObj = {
-        test_header_case_id: self.caseId,
-        test_category_id: self.categoryId,
-        name: self.headercase.name,
-				description : self.case.description,
-        expected_result: self.case.expected_result
-  		};	
-     $scope.loading++;  
-     $http({
-            url: '/node/updateTestCase',
-            method: "PUT",
-            data: dataObj,
-            headers: {'Content-Type': 'application/json'}
-        }).success(function (data, status, headers, config) {
-            $scope.loading--;      
-            }).error(function (data, status, headers, config) {
-              $scope.loading--;
- 			          alert( "failure: " + JSON.stringify({data: data}));
-            });  
+     if ($window.sessionStorage['myLogin']==null){
+       alert("You must be connected");
+     }
+     else{
+        var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
+       	var dataObj = {
+          test_header_case_id: self.caseId,
+          test_category_id: self.categoryId,
+          name: self.headercase.name,
+  				description : self.case.description,
+          expected_result: self.case.expected_result,
+          username: myObj.username,
+          token: myObj.token
+    		};	
+       $scope.loading++;  
+       $http({
+              url: '/node/updateTestCase',
+              method: "PUT",
+              data: dataObj,
+              headers: {'Content-Type': 'application/json'}
+          }).success(function (data, status, headers, config) {
+              $scope.loading--;      
+              }).error(function (data, status, headers, config) {
+                $scope.loading--;
+   			          alert( "failure: " + JSON.stringify({data: data}));
+              }); 
+     } 
   };
 
   // delete a result
   $scope.deleteTestCase= function(){
-    	var dataObj = {
-				test_header_case_id : self.caseId
-		};	
     if (self.results.length>0){
       alert ("The test case can't be deleted: there are results attached to it");
     }
     else{
+     if ($window.sessionStorage['myLogin']==null){
+       alert("You must be connected");
+     }
+     else{
+        var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
+      	var dataObj = {
+  				test_header_case_id : self.caseId,
+          username: myObj.username,
+          token: myObj.token
+  		};	
+    
        $http({
                 url: '/node/deleteTestCase',
                 method: "PUT",
@@ -320,6 +352,7 @@ angular.
                 }).error(function (data, status, headers, config) {
      			          alert( "failure: " + JSON.stringify({data: data}));
                 });
+       }
    }  
   };
 

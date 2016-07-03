@@ -25,26 +25,34 @@ angular.
 
  // update category
   $scope.updateProduct= function(){
-     	var dataObj = {
-        product_id: self.productId,
-        name: self.product.name,
-				description : self.product.description,
-        product_access : self.product.product_access,
-        product_access_url : self.product.product_access_url
-  		};	
-      $rootScope.globalLoading++;
-     //$scope.loading++;  
-     $http({
-            url: '/node/updateProduct',
-            method: "PUT",
-            data: dataObj,
-            headers: {'Content-Type': 'application/json'}
-        }).success(function (data, status, headers, config) {
-            $rootScope.globalLoading--;
-            }).error(function (data, status, headers, config) {
-                $rootScope.globalLoading--;
- 			          alert( "failure: " + JSON.stringify({data: data}));
-            });  
+     if ($window.sessionStorage['myLogin']==null){
+       alert("You must be connected");
+     }
+     else{
+        var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
+       	var dataObj = {
+          product_id: self.productId,
+          name: self.product.name,
+  				description : self.product.description,
+          product_access : self.product.product_access,
+          product_access_url : self.product.product_access_url,
+          username: myObj.username,
+          token: myObj.token
+    		};	
+        $rootScope.globalLoading++;
+       //$scope.loading++;  
+       $http({
+              url: '/node/updateProduct',
+              method: "PUT",
+              data: dataObj,
+              headers: {'Content-Type': 'application/json'}
+          }).success(function (data, status, headers, config) {
+              $rootScope.globalLoading--;
+              }).error(function (data, status, headers, config) {
+                  $rootScope.globalLoading--;
+   			          alert( "failure: " + JSON.stringify({data: data}));
+              });  
+     }
     };      
 
 

@@ -24,6 +24,7 @@ $rootScope.globalLoading++;
             $rootScope.globalLoading--;
 //            $scope.loading--;
             $window.sessionStorage['myLogin']=JSON.stringify(data);
+            
             $rootScope.myLogin = data;
             $rootScope.connected=1;
                         

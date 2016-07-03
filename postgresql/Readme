@@ -1,0 +1,29 @@
+J. Ploquin
+
+//Instruction for creating the database service
+//---------------------------------------------
+1/ Principles
+//-----------
+The database service uses 2 docker containers
+  one data only container, an exited container with just datas
+  one live container for the runtime postgres.
+you can stop, kill, rm the runtime container without losin datas
+
+2/ Instructions
+//-------------
+2.1 build-dataonly-image.sh 
+Build dataonly image
+Include the creation of the database and the database account: interop
+
+2.2 create-dataonly-container.sh
+Start the dataonly container. It stops after few seconds wiwh is normal.
+
+2.3 create-runtime-container.sh
+that's all.
+
+To open an interactive session:
+connect-database.sh
+
+don't forget to make a backup procedure ...
+here's a restore example:
+cat backup.sql.dump | docker run -i --rm --link c_interop-postgres:c_interop-postgres postgres psql -h c_interop-postgres -U interop interop
