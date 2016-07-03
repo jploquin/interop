@@ -9,6 +9,7 @@ var moment = require('moment');
 
 var fs = require("fs");
 var pg = require("pg");
+var q = require("q");
 
 //var dataMgt = require('./dataMgt');
 
@@ -848,28 +849,88 @@ app.get('//getSSOLoginInfo', function (req, res) {
     var expire=moment().add('days',7).valueOf();
     myReturn.expire = expire;
     
-    myReturn.userId=getUserId(myReturn);//userId;
-    console.log('myId'+myReturn.userId);
-    var token=jwt.encode(myReturn,app.get('jwtTokenSecret'));
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+          done();
+          console.log(err);
+      return res.status(500).send(err);
+        }        
+
+        // SQL Query > Select Data
+        var query = client.query("SELECT * FROM test_user where user_sso_id = "+myReturn.external_id+" AND ETAT <> 99 LIMIT 1");
+        var cpt=0;
+
+        // Stream results back one row at a time
+        query.on('row', function(row) {
+          userId=row.test_user_id;
+          console.log('user found:'+userId);
+          done();
+          cpt++;
+        });
+        
+        query.on('end', function(row) {
+           if (cpt==0){
+                console.log('mon cpt: '+cpt);
+                client.query("INSERT INTO test_user "+
+                    " (name, email, user_sso_id, etat, datecre )"+
+                    "  values($1, $2, $3, $4, current_timestamp) returning test_user_id", 
+                      [myReturn.username, myReturn.email, myReturn.external_id, 3],
+                      function(err, result) {
+                        if (err) {
+                            console.log(err);
+                            done();
+                            return res.status(500).send(err);
+                            
+                        } else {
+                            console.log('row inserted with id: ' + result.rows[0].test_user_id);
+                            console.log ('End userAccount');
+                            userId=result.rows[0].test_user_id;
+                            done();
+                            myReturn.userId=userId;
+                            console.log('myId'+myReturn.userId);
+                            var token=jwt.encode(myReturn,app.get('jwtTokenSecret'));
+                            
+                            myReturn.token=token;
+                            console.log(myReturn);
+                            results.push(myReturn);
+                            return res.json(myReturn);
+                        }
+                      }                   
+                );
     
-    myReturn.token=token;
-    console.log(myReturn);
-    results.push(myReturn);
+            }
+            else{
+                myReturn.userId=userId;
+                console.log('myId'+myReturn.userId);
+                var token=jwt.encode(myReturn,app.get('jwtTokenSecret'));
+                
+                myReturn.token=token;
+                console.log(myReturn);
+                results.push(myReturn);
+                return res.json(myReturn);
+            }
+
+        });
+         
+        
+      });
+    
+// return res.json(myReturn);
+   
+    
     //todo: insert user
     //results.push('yy');
    //console.log('ret='+results);
-
-return res.json(myReturn);
+//return res.status(500).send(err);
 
 
 });
 
-//search user returned by sso in the local database
-function getUserId(myReturn){
+function isUserExists(myReturn){
 
-    var userId=1;
-    var cpt=0;
-
+  var userId=0;
     // Get a Postgres client from the connection pool
     pg.connect(connectionString, function(err, client, done) {
         // Handle connection errors
@@ -882,6 +943,53 @@ function getUserId(myReturn){
 
         // SQL Query > Select Data
         var query = client.query("SELECT * FROM test_user where user_sso_id = "+myReturn.external_id+" AND ETAT <> 99 LIMIT 1");
+        
+
+
+
+        // Stream results back one row at a time
+        query.on('row', function(row) {
+          userId=row.test_user_id;
+          console.log('user found:'+userId);
+          done();
+          return userId;
+        });
+      });
+
+}
+
+
+//search user returned by sso in the local database
+function getUserId(myReturn){
+
+    var userId=1;
+    var cpt=0;
+   
+    var myUser=isUserExists(myReturn);
+  if (myUser){
+    console.log('exist'+myUser);
+    return myUser;
+    
+    }
+    /*
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+          done();
+          console.log(err);
+          return userId;
+        }
+        
+
+        // SQL Query > Select Data
+        var query = client.query("SELECT * FROM test_user where user_sso_id = "+myReturn.external_id+" AND ETAT <> 99 LIMIT 1"), function(err, res) {
+            if(err) console.log(err);
+            deferred.resolve(res);
+        });
+        
+
+
 
         // Stream results back one row at a time
         query.on('row', function(row) {
@@ -891,6 +999,8 @@ function getUserId(myReturn){
           done();
           return userId;
         });
+        
+        
         query.on('end', function(row) {
            if (cpt==0){
                 console.log('mon cpt: '+cpt);
@@ -922,6 +1032,7 @@ function getUserId(myReturn){
  
 
     });
+    */
 }
 
 
