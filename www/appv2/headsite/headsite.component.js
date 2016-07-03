@@ -56,7 +56,7 @@ angular.
   };
   // disconnect
   $scope.disconnect= function(){
-      $window.sessionStorage['myLogin']=null;
+      $window.sessionStorage.clear();//$window.sessionStorage['myLogin']=null;
       $rootScope.connected=0;
       $rootScope.myLogin=null;
        $window.location.href = '#!/dashboard';
@@ -80,24 +80,7 @@ angular.
 */                
      
   };
-  // disconnect
-  $scope.disconnect2= function(){
-    	var dataObj = {
-				test_header_case_id : self.caseId
-		};	
-$window.location.href = 'https://forum.etalab.gouv.fr/admin/users/645/log_out';
-       $http({
-                url: 'https://forum.etalab.gouv.fr/admin/users/645/log_out',
-                method: "GET",
-//                data: dataObj,
-//                headers: {'Content-Type': 'application/json'}
-            }).success(function (data, status, headers, config) {
-                  alert('disconnected');
-                }).error(function (data, status, headers, config) {
-     			          alert( "failure: " + data);
-                });
-     
-  };
+
 
 
       }

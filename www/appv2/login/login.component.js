@@ -23,7 +23,7 @@ $rootScope.globalLoading++;
             success(function(data) {
             $rootScope.globalLoading--;
 //            $scope.loading--;
-            $window.sessionStorage['myLogin']=data;
+            $window.sessionStorage['myLogin']=JSON.stringify(data);
             $rootScope.myLogin = data;
             $rootScope.connected=1;
                         

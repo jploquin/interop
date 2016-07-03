@@ -11,22 +11,26 @@ angular.
         this.themeId = $routeParams.themeId;
 	var self = this;
 	$scope.loading=0;
-        $scope.loading++;
+      $rootScope.globalLoading++;
+//        $scope.loading++;
 	//get details
   	$http.get('/node/Category?categoryId='+this.themeId+'&token='+
 			$window.localStorage['jwt']).
             success(function(data) {
             self.category = data;
-	    $scope.loading --;
+      $rootScope.globalLoading--;
+//	    $scope.loading --;
           });
 
 	//get list of test cases
-	$scope.loading++;
+  $rootScope.globalLoading++;
+//	$scope.loading++;
   	$http.get('/node/listCases?categoryId='+this.themeId+'&token='+
 			$window.localStorage['jwt']).
             success(function(data) {
             self.cas = data;
-	    $scope.loading--;
+      $rootScope.globalLoading--;
+//	    $scope.loading--;
           });
       
 
@@ -37,16 +41,17 @@ angular.
         name: self.category.name,
 				description : self.category.description
   		};	
-     $scope.loading++;  
+      $rootScope.globalLoading++;
+//     $scope.loading++;  
      $http({
             url: '/node/updateCategory',
             method: "PUT",
             data: dataObj,
             headers: {'Content-Type': 'application/json'}
         }).success(function (data, status, headers, config) {
-            $scope.loading--;      
+            $rootScope.globalLoading--;
             }).error(function (data, status, headers, config) {
-              $scope.loading--;
+                $rootScope.globalLoading--;
  			          alert( "failure: " + JSON.stringify({data: data}));
             });  
     };      

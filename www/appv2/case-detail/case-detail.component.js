@@ -141,24 +141,29 @@ angular.
 		self.matrixResults[i][j]=-1;
 	}
 	//get header details
+  $rootScope.globalLoading++;
   	$http.get('/node/HeaderCase?caseId='+this.caseId+'&token='+
 			$window.localStorage['jwt']).
             success(function(data) {
             self.headercase = data;
-	    $scope.loading --;
+            $rootScope.globalLoading--;
+	    //$scope.loading --;
           });
 
 
-        $scope.loading++;
+ //       $scope.loading++;
+  $rootScope.globalLoading++;
 	//get case details
   	$http.get('/node/Case?caseId='+this.caseId+'&token='+
 			$window.localStorage['jwt']).
             success(function(data) {
             self.case = data;
-	    $scope.loading --;
+            $rootScope.globalLoading--;
+	   // $scope.loading --;
           });
 
-        $scope.loading++;
+//        $scope.loading++;
+  $rootScope.globalLoading++;
 	//get product list to construct the matrix of results: 
   	$http.get('/node/listProducts?token='+
 			$window.localStorage['jwt']).
@@ -167,7 +172,7 @@ angular.
 	    var i=0;
 	    for ( i=0;i<self.products.length;i++)
 		self.products[i].rank = i+1;
-	    $scope.loading --;
+	  //  $scope.loading --;
          
 	//get result list to construct the matrix of results: 
   	$http.get('/node/listResults?caseId='+self.caseId+'&token='+
@@ -176,6 +181,7 @@ angular.
             self.results = data;
 	          var i=0;
             calculateViewResults(self.products, self.results, self.matrixResults);
+            $rootScope.globalLoading--;
    });
 
          

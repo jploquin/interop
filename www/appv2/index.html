@@ -9,10 +9,6 @@
     <script src="bower_components/angular-route/angular-route.min.js"></script>
     <script src="app.module.js"></script>
     <script src="app.config.js"></script>
-    <script src="phone-list/phone-list.module.js"></script>
-    <script src="phone-list/phone-list.component.js"></script>
-    <script src="phone-detail/phone-detail.module.js"></script>
-    <script src="phone-detail/phone-detail.component.js"></script>
     <script src="product-list/product-list.module.js"></script>
     <script src="product-list/product-list.component.js"></script>
     <script src="theme-list/theme-list.module.js"></script>
@@ -39,7 +35,7 @@
   </head>
   <body>
 
-<div id="mydivGlobal"  ng-show="globalLoading" >
+<div style="z-index:99;position:absolute;width:100%;height:100%" id="mydivGlobal"  ng-show="globalLoading" >
     <img src="/interop/img/loading.gif" class="ajax-loader"/>
 </div>
 

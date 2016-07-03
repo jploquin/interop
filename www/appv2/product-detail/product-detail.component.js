@@ -13,12 +13,14 @@ angular.
 	      $scope.loading=0;
         $scope.loading++;
 
+  $rootScope.globalLoading++;
 	//get details
   	$http.get('/node/Product?productId='+this.productId+'&token='+
 			$window.localStorage['jwt']).
             success(function(data) {
             self.product = data;
-	    $scope.loading --;
+            $rootScope.globalLoading--;
+//	    $scope.loading --;
           });
 
  // update category
@@ -30,16 +32,17 @@ angular.
         product_access : self.product.product_access,
         product_access_url : self.product.product_access_url
   		};	
-     $scope.loading++;  
+      $rootScope.globalLoading++;
+     //$scope.loading++;  
      $http({
             url: '/node/updateProduct',
             method: "PUT",
             data: dataObj,
             headers: {'Content-Type': 'application/json'}
         }).success(function (data, status, headers, config) {
-            $scope.loading--;      
+            $rootScope.globalLoading--;
             }).error(function (data, status, headers, config) {
-              $scope.loading--;
+                $rootScope.globalLoading--;
  			          alert( "failure: " + JSON.stringify({data: data}));
             });  
     };      

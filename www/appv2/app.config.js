@@ -62,6 +62,10 @@ angular.
       $rootScope.connected=0;
       $rootScope.myLogin=null;
      } 
+     else {
+      $rootScope.connected=1;
+      $rootScope.myLogin=JSON.parse($window.sessionStorage['myLogin']);
+     }
 //        $rootScope.testClient = false;
 //	 $rootScope.token=0;
    $rootScope.globalLoading=0;
