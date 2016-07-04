@@ -31,7 +31,7 @@ $rootScope.globalLoading++;
             }).error(function (data, status, headers, config) {
                 $rootScope.globalLoading--;
 //                $scope.loading--;
- 			          alert( "failure: " + JSON.stringify({data: data}));
+ 			          alert( "failure: " + data);
             });  
 
 

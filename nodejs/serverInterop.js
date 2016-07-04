@@ -5,11 +5,13 @@ var querystring = require('querystring');
 var crypto = require('crypto');
 var jwt = require('jwt-simple');
 var moment = require('moment');
+var https = require('https');
 
 
 var fs = require("fs");
 var pg = require("pg");
 var q = require("q");
+var srequest = require('sync-request');
 
 //var dataMgt = require('./dataMgt');
 
@@ -32,7 +34,14 @@ var connectionString = process.env.DATABASE_URL;
 var login=process.env.LOGINURL;
 var rand='12345';
 var secret='nuitdebout';
-var discourseRootUrl='https://forum.etalab.gouv.fr';
+var baseDiscourseRootUrl='forum.etalab.gouv.fr';
+var discourseRootUrl='https://'+baseDiscourseRootUrl;
+
+var api_key=process.env.API_KEY;
+var api_username=process.env.API_USERNAME;
+var discourse_group=process.env.DISCOURSE_GROUP;
+var GROUP_NAME="interop-messagerie";
+
 // ||
 //'postgres://interop:fanfaron@localhost:5432/interop';
 
@@ -862,14 +871,54 @@ app.get('//getSSOLoginInfo', function (req, res) {
     myReturn = parseQuery(sbuf);
     var expire=moment().add('days',7).valueOf();
     myReturn.expire = expire;
-    
-    // Get a Postgres client from the connection pool
-    pg.connect(connectionString, function(err, client, done) {
+
+    //verify that user is member of the right discourse group
+    if (discourse_group.length>0 &&api_key.length>0){
+      console.log('start discourse verif');
+      
+      var options = {
+        host: baseDiscourseRootUrl,
+        path: '/users/'+myReturn.username+'.json?api_key='+api_key+'&api_username='+api_username
+      };
+      
+      callback = function(response) {
+        var str = '';
+      
+        //another chunk of data has been recieved, so append it to `str`
+        response.on('data', function (chunk) {
+        console.log('response from request');
+          str += chunk;
+        });//end response.on data
+      
+        //the whole response has been recieved, so we just print it out here
+        response.on('end', function () {
+          var myGroups=JSON.parse(str);
+          myGroups=myGroups["user"]["groups"];
+          var fini=(myGroups.length==0);
+          var trouve=false;
+          var cpt=0;
+          while(!fini){
+            if (myGroups[cpt].name==GROUP_NAME){
+              fini=true;
+              trouve=true;
+            }
+            else{
+              cpt++;
+              fini = (cpt>=myGroups.length);
+            }
+          }
+        if (!trouve){
+          return res.status(500).send("You must be in the interoperability group");  
+        }
+        else {
+        console.log('trouve');
+        // Get a Postgres client from the connection pool
+        pg.connect(connectionString, function(err, client, done) {
         // Handle connection errors
         if(err) {
           done();
           console.log(err);
-      return res.status(500).send(err);
+          return res.status(500).send(err);
         }        
 
         // SQL Query > Select Data
@@ -930,6 +979,26 @@ app.get('//getSSOLoginInfo', function (req, res) {
          
         
       });
+
+  }
+
+        });//end response on end
+         response.on('error', function () {
+          return res.status(500).send("Impossible to verify group attachment");
+        });
+     }
+      console.log('options'+options.host+options.path);
+      https.request(options, callback).end();
+
+
+    }  
+    else {
+      console.log('impossible to verify');    
+    return res.status(500).send("Impossible to verify group attachment");
+    }
+    
+    
+    
     
 // return res.json(myReturn);
    

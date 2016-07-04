@@ -1,5 +1,5 @@
 <!--div id="mydiv"  ng-show="loading" >
     <img src="/interop/img/loading.gif" class="ajax-loader"/>
 </div --!>
-<p class="subtitle"> Welcome {{$root.myLogin.username}} </p>
+<p class="subtitle" ng-show=$root.connected > Welcome {{$root.myLogin.username}} </p>
 
