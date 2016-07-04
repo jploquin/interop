@@ -214,7 +214,7 @@ insert into test_case (test_header_case_id,description)
 	values (6,'The receiver has to answer "provisional" to an events invitation');
     
 
-insert into test_user (name,email,password,etat) values ('Dinsic','jerome.ploquin@modernisation.gouv.fr','fanfaronfanfaron',3);
+insert into test_user (name,email,password,user_sso_id,etat) values ('Dinsic','jerome.ploquin@modernisation.gouv.fr','fanfaronfanfaron',645,3);
 insert into test_result (product_1_id, product_2_id,test_header_case_id, test_case_id, result, description, test_user_id, datecre) 
 values (1,2,1,1,1,'All is ok',1, '20160422'); 
 

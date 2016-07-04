@@ -143,6 +143,16 @@ console.log('Start category');
 //get product
 app.get('//Product', function (req, res) {
 console.log('Start product'); 
+
+    var detailAuthorized=false;
+    var myTokenObject = getObjectFromToken(req.param('token'));
+    var username= req.param('username');
+    console.log('tok:'+myTokenObject);
+    console.log('uname='+username);
+    if (myTokenObject!=null && (verifyTokenObject2(myTokenObject,username))){
+      detailAuthorized=true;
+    }
+
     var results = [];
     var id  = req.param('productId');
 	
@@ -163,6 +173,10 @@ console.log('Start product');
         query.on('row', function(row) {
 	    console.log('End product'); 
         done(); 
+        if (!detailAuthorized){
+          row.product_access="";
+          row.product_access_url="";
+        }
             return res.json(row);
  //           results.push(row);
         });
@@ -1089,7 +1103,17 @@ function verifyTokenObject(myTokenObject,req){
     return ret;
 }
 
-
+function verifyTokenObject2(myTokenObject,username){
+  var ret=true;
+  if (myTokenObject.username != username){
+      ret = false;   
+      console.log('uname');
+    } else if (myTokenObject.expire <= Date.now()) {
+       ret = false;   
+       console.log('date');  
+    }
+    return ret;
+}
 var server = app.listen(8080, function () {
 
   var host = server.address().address

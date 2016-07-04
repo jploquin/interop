@@ -18,15 +18,20 @@
 </td>
 </tr>
 <tr>
-<td>Access url:  </td><td><input size=64 type="text" maxlength=256 name="country" ng-model=$ctrl.product.product_access_url>
-<a target="_blank" href={{$ctrl.product.product_access_url}}> {{$ctrl.product.product_access_url}} </a>
+<td>Access url:  </td><td><span ng-show=$root.connected><input  size=64 type="text" maxlength=256 name="country" ng-model=$ctrl.product.product_access_url>
+<a target="_blank" href={{$ctrl.product.product_access_url}}> {{$ctrl.product.product_access_url}} </a></span>
+<span ng-hide=$root.connected style='color:red'>You must be connected to access this information</span>
 </td>
 </tr>
 <tr>
 <td> Access instruction:</td>
 <td>
+<span ng-show=$root.connected>
 <textarea rows="4" cols="130" maxlength=1024 ng-model=$ctrl.product.product_access>
 </textarea>
+</span>
+<span ng-hide=$root.connected style='color:red'>You must be connected to access this information</span>
+
  </td>
 </tr>
 </table>

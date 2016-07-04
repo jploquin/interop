@@ -15,8 +15,30 @@ angular.
 
   $rootScope.globalLoading++;
 	//get details
+ 
+/*        $http({
+              url: '/node/updateProduct',
+              method: "GET",
+              data: dataObj,
+              headers: {'Content-Type': 'application/json'}
+          }).success(function (data, status, headers, config) {
+              self.product = data;
+              $rootScope.globalLoading--;
+              }).error(function (data, status, headers, config) {
+                  $rootScope.globalLoading--;
+   			          alert( "failure: " + data);
+              });  
+*/
+   var myToken="";
+   var username="";
+   if ($window.sessionStorage['myLogin']!=null){
+        var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
+        myToken=myObj.token;
+        username=myObj.username;
+   }
+ 
   	$http.get('/node/Product?productId='+this.productId+'&token='+
-			$window.localStorage['jwt']).
+			myToken+'&username='+username).
             success(function(data) {
             self.product = data;
             $rootScope.globalLoading--;
