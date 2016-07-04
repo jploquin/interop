@@ -16,6 +16,8 @@ angular.
             success(function(data) {
             self.themes = data;
             $rootScope.globalLoading--;
+          }).error(function (data, status, headers, config) {
+            $rootScope.globalLoading--;
           });
 
   }]
