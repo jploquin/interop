@@ -7,6 +7,9 @@ drop table if exists test_case;
 drop table if exists test_result; 
 drop table if exists test_user; 
 
+drop if exists view test_header_case_result;
+drop if exists view stats;
+
 
 create table product 
 (
@@ -57,6 +60,7 @@ create table test_header_case
 	test_header_case_id serial  primary key,
 	test_category_id integer,
 	name char(32),
+  single_product_test smallint,
 	etat smallint default 3,
 	cre_test_user_id integer,
 	maj_test_user_id integer,
@@ -110,6 +114,20 @@ create table  test_user
 	usermaj char(32),
 	datecre Date default current_timestamp,
 	datemaj Date);
+
+
+create or replace view test_header_case_result (test_result_id,product_1_id,product_2_id)
+as select max(test_result_id),product_1_id,product_2_id from test_result where etat <>99 group by product_1_id, product_2_id;
+
+
+create or replace view stats (nb_products,nb_categories,nb_tests,nb_execute,nb_execute_failed,nb_execute_succeeded)
+as select
+(select count(*) from product where etat <>99),
+(select count(*) from test_category where etat<>99),
+(select count(*) from test_header_case where etat<>99),
+(select count(*) from test_result where etat<>99),
+(select count(*) from test_result r, test_header_case_result h where r.test_result_id=h.test_result_id and r.etat<>99 and r.result=0),
+(select count(*) from test_result r, test_header_case_result h where r.test_result_id=h.test_result_id and r.etat<>99 and r.result=1);
 
 insert into provider(name) values ('Alinto');
 insert into provider(name) values ('Aduneo');
