@@ -11,7 +11,6 @@ var https = require('https');
 var fs = require("fs");
 var pg = require("pg");
 var q = require("q");
-var srequest = require('sync-request');
 
 //var dataMgt = require('./dataMgt');
 

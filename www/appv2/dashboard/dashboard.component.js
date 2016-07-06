@@ -9,6 +9,8 @@ angular.
     controller: ['$routeParams','$scope','$rootScope','$http',
       function DashboardDetailController($routeParams,$scope,$rootScope,$http) {
         var self = this;	//get stats
+         $scope.succeeded = {left:"",right:""};
+         $scope.execute = {left:"",right:""};
   $rootScope.globalLoading++;
 //	$scope.loading++;
   	$http.get('/node/Stats').
@@ -21,6 +23,16 @@ angular.
             if (self.stats.nb_execute>0){
               self.stats.pct_execute_succeeded= Math.round(self.stats.nb_execute_succeeded*100/self.stats.nb_execute);
             }
+            $scope.succeeded.left = {
+              "width":self.stats.pct_execute_succeeded+"px",
+              "background-color" : "rgb(0,153,255)",
+          }
+            var myPct=0;
+            if (self.stats.nb_combination>0) myPct=Math.round(100*self.stats.nb_execute/self.stats.nb_combination);
+            $scope.execute.left = {
+              "width":myPct+"px",
+              "background-color" : "rgb(0,153,255)",
+          }
             $rootScope.globalLoading--;
       
 //	    $scope.loading--;

@@ -189,7 +189,7 @@ angular.
 
 	//cell clicked
 	$scope.changeResult = function($rank1,$rank2) {
-	  if ($rank1 != $rank2){
+//	  if ($rank1 != $rank2){
   		var myName = 'changeResult'+$rank1+'::'+$rank2;
   		var target = document.getElementById(myName);
   		var box = target.getBoundingClientRect();
@@ -224,7 +224,7 @@ angular.
 		  }
 		  $scope.loadingChangeResult++;
 
-	  }
+//	  }
   	};
 
   // write a new result
@@ -367,7 +367,7 @@ angular.
 	};
 	$scope.getClassResult = function ($rank1,$rank2) {
 	  var ret="cellResult icon-cross";
-	  if ($rank1 != $rank2){
+	 // if ($rank1 != $rank2){
 	   switch (	self.matrixResults[$rank1-1][$rank2-1]){
 		case -1: 
 		  ret = "cellResult icon-question";
@@ -379,7 +379,7 @@ angular.
 		  ret = "cellResult icon-green";
 		  break;
 	   }
-	  }
+	 // }
 	  return ret;
 	};
 

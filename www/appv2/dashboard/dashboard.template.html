@@ -11,17 +11,24 @@
       <div class="row">
         <div class="col-md-2" style="width:50%;border-right:1px solid grey">
 
-<p class="subtitle"> Current statistics: {{ctrl.uhu}} </p>
+<p class="subtitle"> Current statistics:  </p>
 <table>
-<tr><td>Number of solutions: </td><td class='cellRight'>{{$ctrl.stats.nb_products}}</td></tr>
-<tr><td>Number of themes:</td><td class='cellRight'>{{$ctrl.stats.nb_categories}}</td></tr>
-<tr><td>Number of tests cases:</td><td class='cellRight'>{{$ctrl.stats.nb_tests}}</td></tr>
-<tr><td>Number of combination: </td><td class='cellRight'>{{$ctrl.stats.nb_combination}}</td></tr>
-<tr><td>Number of tests executed: </td><td class='cellRight'>{{$ctrl.stats.nb_execute}}</td></tr>
-<tr><td>Percentage of tests that succeeded: </td><td class='cellRight'>{{$ctrl.stats.pct_execute_succeeded}} %
+<tr><td>Number of solutions: </td><td class='cellRight'>{{$ctrl.stats.nb_products}}</td><td></td></tr>
+<tr><td>Number of themes:</td><td class='cellRight'>{{$ctrl.stats.nb_categories}}</td><td></td></tr>
+<tr><td>Number of tests cases:</td><td class='cellRight'>{{$ctrl.stats.nb_tests}}</td><td></td></tr>
+<tr><td>Number of combination: </td><td class='cellRight'>{{$ctrl.stats.nb_combination}}</td><td></td></tr>
+<tr><td colspan=3><hr></td></tr>
+<tr><td>Number of tests executed: </td><td class='cellRight'>{{$ctrl.stats.nb_execute}}</td>
+<td class='cellRight'>
 <table class='pct_table'>
-<tr><td style='width80px;background-color:blue'>&nbsp;</td><td  style='width20px;'>&nbsp;</td></tr></table>
-
+<tr><td ng-style="execute.left"></td><td  ></td></tr></table>
+</td>
+</tr>
+<tr><td>Percentage of tests that succeeded: </td><td class='cellRight'>{{$ctrl.stats.pct_execute_succeeded}} %
+</td>
+<td class='cellRight'>
+<table class='pct_table'>
+<tr><td ng-style="succeeded.left"></td><td  ></td></tr></table>
 </td></tr>
 </table>
   </div>

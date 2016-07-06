@@ -85,7 +85,8 @@
 </tr>
 <tr  ng-repeat="product1 in $ctrl.products">
 <td class="firstColResult"> {{product1.rank}}. {{product1.name}} </td>
-<td id="changeResult{{product1.rank}}::{{product2.rank}}" class="tdResult" ng-repeat="product2 in $ctrl.products">
+<td id="changeResult{{product1.rank}}::{{product2.rank}}" class="tdResult" ng-repeat="product2 in $ctrl.products" 
+title = "From {{product1.name.trim()}} to {{product2.name.trim()}}">
 
 <div ng-class="getClassResult({{product1.rank}},{{product2.rank}})" 
 ng-click = 'changeResult(product1.rank,product2.rank)'>
