@@ -1,6 +1,4 @@
-<div id="mydiv"  ng-show="loading" >
-    <img src="/interop/img/loading.gif" class="ajax-loader"/>
-</div>
+
 <div>
 <p class="subtitle"> Testing the email systems interoperability <hr> </p>
 <p> What you can do here: </p>
@@ -13,15 +11,19 @@
       <div class="row">
         <div class="col-md-2" style="width:50%;border-right:1px solid grey">
 
-<p class="subtitle"> Current statistics: </p>
-<ul>
-<li>Number of solutions: tbd</li>
-<li>Number of tests cases: tbd</li>
-<li>Number of combination: tbd</li>
-<li>Number of tests executed: tbd</li>
-<li> Percentage of tests that succeeded: tbd</li>
-</ul>
+<p class="subtitle"> Current statistics: {{ctrl.uhu}} </p>
+<table>
+<tr><td>Number of solutions: </td><td class='cellRight'>{{$ctrl.stats.nb_products}}</td></tr>
+<tr><td>Number of themes:</td><td class='cellRight'>{{$ctrl.stats.nb_categories}}</td></tr>
+<tr><td>Number of tests cases:</td><td class='cellRight'>{{$ctrl.stats.nb_tests}}</td></tr>
+<tr><td>Number of combination: </td><td class='cellRight'>{{$ctrl.stats.nb_combination}}</td></tr>
+<tr><td>Number of tests executed: </td><td class='cellRight'>{{$ctrl.stats.nb_execute}}</td></tr>
+<tr><td>Percentage of tests that succeeded: </td><td class='cellRight'>{{$ctrl.stats.pct_execute_succeeded}} %
+<table class='pct_table'>
+<tr><td style='width80px;background-color:blue'>&nbsp;</td><td  style='width20px;'>&nbsp;</td></tr></table>
 
+</td></tr>
+</table>
   </div>
   <div class="col-md-10" style="width:50%;">
   <p class="subtitle">Next events:</p>

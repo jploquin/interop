@@ -153,3 +153,12 @@ body {
 overflow:auto   ;
    height:150px;
 }
+.cellRight{
+text-align:right;
+padding-left:10px;
+}
+.pct_table{
+border:solid 1px grey;
+width:100px;
+height:5px;
+}

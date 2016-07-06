@@ -43,8 +43,38 @@ var discourse_group=process.env.DISCOURSE_GROUP;
 var GROUP_NAME="interop-messagerie";
 
 // ||
-//'postgres://interop:fanfaron@localhost:5432/interop';
+//'postgres://interop:xxxxxxxxx@localhost:5432/interop';
 
+
+//get stats
+app.get('//Stats', function (req, res) {
+    var results = [];
+    console.log('Start stats'); 
+ 
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+          done();
+          console.log(err);
+      return res.status(500).send(err);
+        }
+
+        // SQL Query > Select Data
+        var query = client.query(
+		"SELECT * FROM stats;")
+ 
+        // Stream results back one row 
+        query.on('row', function(row) {
+	console.log('End stats'); 
+        done(); 
+            return res.json(row);
+ //           results.push(row);
+        });
+
+   });
+
+});
 
 
 //get header case
