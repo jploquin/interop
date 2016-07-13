@@ -7,8 +7,8 @@ drop table if exists test_case;
 drop table if exists test_result; 
 drop table if exists test_user; 
 
-drop if exists view test_header_case_result;
-drop if exists view stats;
+drop view if exists test_header_case_result;
+drop view if exists stats;
 
 
 create table product 
