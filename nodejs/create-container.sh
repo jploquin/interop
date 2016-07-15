@@ -1,1 +1,1 @@
-sudo docker run --detach  --name interop-nodejs interop-nodejs  
+sudo docker run --detach --name interop-nodejs -p 8080:8080 --link c_interop-postgres:interop-postgres interop-nodejs
