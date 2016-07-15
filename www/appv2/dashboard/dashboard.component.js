@@ -2,7 +2,7 @@
 
 // Register `dashboard` component, along with its associated controller and template
 angular.
-  module('dashboard').
+  module('dashboard',['ngSanitize']).
   component('dashboard', {
 
     templateUrl: 'dashboard/dashboard.template.html',
@@ -11,6 +11,8 @@ angular.
         var self = this;	//get stats
          $scope.succeeded = {left:"",right:""};
          $scope.execute = {left:"",right:""};
+         $scope.errorMsg="";
+         $scope.serviceOk=true;
   $rootScope.globalLoading++;
 //	$scope.loading++;
   	$http.get('/node/Stats').
@@ -38,7 +40,16 @@ angular.
 //	    $scope.loading--;
           }).error(function (data, status, headers, config) {
                   $rootScope.globalLoading--;
-   			          alert( "failure: " + data);
+                  var isErrorTreated = false;
+                  if (typeof data == "string")
+                    if (data.startsWith("<!DOCTYPE HTML")){
+                      $scope.serviceOk=false;
+                      $scope.errorMsg=data;
+                      isErrorTreated = true;
+                    }
+                  if (!isErrorTreated)    
+   			            alert( "failure: " + data);
+                  
               }); 
       }
     ]

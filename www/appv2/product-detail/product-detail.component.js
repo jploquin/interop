@@ -2,12 +2,12 @@
 
 // Register `productDetail` component, along with its associated controller and template
 angular.
-  module('productDetail').
+  module('productDetail',['ngMaterial']).
   component('productDetail', {
     templateUrl: 'product-detail/product-detail.template.html',
     //template: 'TBD: Detail view for <span>{{$ctrl.productId}}</span>',
-    controller: ['$routeParams','$http','$rootScope','$scope','$window',
-      function productDetailController($routeParams,$http,$rootScope, $scope,$window) {
+    controller: ['$routeParams','$http','$rootScope','$scope','$window','$mdDialog',
+      function productDetailController($routeParams,$http,$rootScope, $scope,$window,$mdDialog) {
         this.productId = $routeParams.productId;
 	      var self = this;
 	      $scope.loading=0;
@@ -16,19 +16,7 @@ angular.
   $rootScope.globalLoading++;
 	//get details
  
-/*        $http({
-              url: '/node/updateProduct',
-              method: "GET",
-              data: dataObj,
-              headers: {'Content-Type': 'application/json'}
-          }).success(function (data, status, headers, config) {
-              self.product = data;
-              $rootScope.globalLoading--;
-              }).error(function (data, status, headers, config) {
-                  $rootScope.globalLoading--;
-   			          alert( "failure: " + data);
-              });  
-*/
+
    var myToken="";
    var username="";
    if ($window.sessionStorage['myLogin']!=null){
@@ -43,12 +31,15 @@ angular.
             self.product = data;
             $rootScope.globalLoading--;
 //	    $scope.loading --;
-          });
+          }).error(function (data, status, headers, config) {
+                  $rootScope.globalLoading--;
+   			          myWarning($mdDialog,data);//JSON.stringify({data: data}));
+              });
 
  // update category
   $scope.updateProduct= function(){
      if ($window.sessionStorage['myLogin']==null){
-       alert("You must be connected");
+       myWarning($mdDialog,"You must be connected");
      }
      else{
         var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
@@ -72,7 +63,7 @@ angular.
               $rootScope.globalLoading--;
               }).error(function (data, status, headers, config) {
                   $rootScope.globalLoading--;
-   			          alert( "failure: " + JSON.stringify({data: data}));
+   			          myWarning($mdDialog,data);
               });  
      }
     };      
