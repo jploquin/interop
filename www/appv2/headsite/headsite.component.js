@@ -25,11 +25,11 @@ var res="";
 
  
 angular.
-  module('headsite').
+  module('headsite',['ngMaterial']).
   component('headsite', {
     templateUrl: 'headsite/headsite.template.html',
-    controller: ['$routeParams','$http','$rootScope','$scope','$window',
-      function headSiteController($routeParams,$http,$rootScope, $scope,$window) {
+    controller: ['$routeParams','$http','$rootScope','$scope','$window','$mdDialog',
+      function headSiteController($routeParams,$http,$rootScope, $scope,$window,$mdDialog) {
  /*       this.caseId = $routeParams.caseId;
 	      var self = this;
  	//get case details
@@ -50,7 +50,10 @@ angular.
   	$http.get('/node/urlRedirect').
             success(function(data) {
             $window.location.href = data[0];
-          });
+          }).error(function (data, status, headers, config) {
+                
+                myWarning($mdDialog,data);       			       //   alert( "failure: " + data);//JSON.stringify({data: data}));
+              });
 
      
   };

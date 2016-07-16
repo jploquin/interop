@@ -118,11 +118,11 @@ function  recalculateViewResults(products, results, matrixResults, myRes){
 
  
 angular.
-  module('caseDetail').
+  module('caseDetail',['ngMaterial']).
   component('caseDetail', {
     templateUrl: 'case-detail/case-detail.template.html',
-    controller: ['$routeParams','$http','$rootScope','$scope','$window',
-      function caseDetailController($routeParams,$http,$rootScope, $scope,$window) {
+    controller: ['$routeParams','$http','$rootScope','$scope','$window','$mdDialog',
+      function caseDetailController($routeParams,$http,$rootScope, $scope,$window,$mdDialog) {
         this.caseId = $routeParams.caseId;
 	var self = this;
 	
@@ -148,7 +148,10 @@ angular.
             self.headercase = data;
             $rootScope.globalLoading--;
 	    //$scope.loading --;
-          });
+          }).error(function (data, status, headers, config) {
+                  $rootScope.globalLoading--;
+   			          myWarning($mdDialog,data);//JSON.stringify({data: data}));
+              });
 
 
  //       $scope.loading++;
@@ -230,7 +233,7 @@ angular.
   // write a new result
   $scope.writeResult= function(testResult){
      if ($window.sessionStorage['myLogin']==null){
-       alert("You must be connected");
+       myWarning($mdDialog,"You must be connected");
      }
      else{
         var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
@@ -258,7 +261,7 @@ angular.
                 self.results.splice(0,0,data[0]);
                 $scope.loadingChangeResult=0;
               }).error(function (data, status, headers, config) {
-   			          alert( "failure: " + JSON.stringify({data: data}));
+   			          myWarning($mdDialog,data);
               });  
      }
   };
@@ -266,7 +269,7 @@ angular.
   // delete a result
   $scope.deleteResult= function(testResultId){
      if ($window.sessionStorage['myLogin']==null){
-       alert("You must be connected");
+       myWarning($mdDialog,"You must be connected");
      }
      else{
         var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
@@ -287,7 +290,7 @@ angular.
                      removeResultFromTab(testResultId,self.results);
                      recalculateViewResults(self.products, self.results, self.matrixResults, myRes); 
                   }).error(function (data, status, headers, config) {
-       			          alert( "failure: " + JSON.stringify({data: data}));
+       			          myWarning($mdDialog,data);
                   });  
      }
   };
@@ -297,7 +300,7 @@ angular.
   // update test case
   $scope.updateTestCase= function(){
      if ($window.sessionStorage['myLogin']==null){
-       alert("You must be connected");
+       myWarning($mdDialog,"You must be connected");
      }
      else{
         var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
@@ -320,7 +323,7 @@ angular.
               $scope.loading--;      
               }).error(function (data, status, headers, config) {
                 $scope.loading--;
-   			          alert( "failure: " + JSON.stringify({data: data}));
+   			          myWarning($mdDialog,data);
               }); 
      } 
   };
@@ -328,11 +331,11 @@ angular.
   // delete a result
   $scope.deleteTestCase= function(){
     if (self.results.length>0){
-      alert ("The test case can't be deleted: there are results attached to it");
+      myWarning($mdDialog,"The test case can't be deleted: there are results attached to it");
     }
     else{
      if ($window.sessionStorage['myLogin']==null){
-       alert("You must be connected");
+       myWarning($mdDialog,"You must be connected");
      }
      else{
         var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
@@ -350,7 +353,7 @@ angular.
             }).success(function (data, status, headers, config) {
                   $window.location.href = "#!/dashboard"
                 }).error(function (data, status, headers, config) {
-     			          alert( "failure: " + JSON.stringify({data: data}));
+     			          myWarning($mdDialog,data);
                 });
        }
    }  

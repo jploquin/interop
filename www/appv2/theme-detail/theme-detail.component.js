@@ -2,12 +2,12 @@
 
 // Register `themeDetail` component, along with its associated controller and template
 angular.
-  module('themeDetail').
+  module('themeDetail',['ngMaterial']).
   component('themeDetail', {
     templateUrl: 'theme-detail/theme-detail.template.html',
     //template: 'TBD: Detail view for <span>{{$ctrl.themeId}}</span>',
-    controller: ['$routeParams','$http','$rootScope','$scope','$window',
-      function ThemeDetailController($routeParams,$http,$rootScope, $scope,$window) {
+    controller: ['$routeParams','$http','$rootScope','$scope','$window','$mdDialog',
+      function ThemeDetailController($routeParams,$http,$rootScope, $scope,$window,$mdDialog) {
         this.themeId = $routeParams.themeId;
 	var self = this;
 	$scope.loading=0;
@@ -33,7 +33,6 @@ angular.
 //	    $scope.loading--;
           }).error(function (data, status, headers, config) {
                   $rootScope.globalLoading--;
- //  			          alert( "failure: " + data);//JSON.stringify({data: data}));
               }); 
       
       
@@ -41,7 +40,7 @@ angular.
           })
           .error(function (data, status, headers, config) {
                   $rootScope.globalLoading--;
-   			          alert( "failure: " + data);//JSON.stringify({data: data}));
+   			          myWarning($mdDialog,data);//JSON.stringify({data: data}));
               }); 
 
       
@@ -49,7 +48,7 @@ angular.
   // update category
   $scope.updateCategory= function(){
      if ($window.sessionStorage['myLogin']==null){
-       alert("You must be connected");
+       myWarning($mdDialog,"You must be connected");
      }
      else{
         var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
@@ -71,7 +70,7 @@ angular.
               $rootScope.globalLoading--;
               }).error(function (data, status, headers, config) {
                   $rootScope.globalLoading--;
-   			          alert( "failure: " + JSON.stringify({data: data}));
+   			          myWarning($mdDialog,data);
               });  
     }
     };      
@@ -89,9 +88,9 @@ angular.
             data: dataObj,
             headers: {'Content-Type': 'application/json'}
         }).success(function (data, status, headers, config) {
-            alert('ok!');      
+            myWarning($mdDialog,'ok!');      
             }).error(function (data, status, headers, config) {
- 			          alert( "failure: " + status + '::' + JSON.stringify({data: data}));
+ 			          myWarning($mdDialog, data);
             });  
 
 

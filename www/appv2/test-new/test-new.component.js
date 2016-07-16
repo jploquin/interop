@@ -2,11 +2,11 @@
 
 // Register `testNew` component, along with its associated controller and template
 angular.
-  module('testNew').
+  module('testNew',['ngMaterial']).
   component('testNew', {
   templateUrl: 'test-new/test-new.template.html',
-    controller: ['$routeParams','$location','$window','$scope','$http',
-      function TestNewController($routeParams,$location,$window,$scope,$http) {
+    controller: ['$routeParams','$location','$window','$scope','$http','$mdDialog',
+      function TestNewController($routeParams,$location,$window,$scope,$http,$mdDialog) {
         this.name="";
         this.description="";
         this.expected_result="";
@@ -23,7 +23,7 @@ angular.
  // write the new test case
  this.save= function(){
      if ($window.sessionStorage['myLogin']==null){
-       alert("You must be connected");
+       myWarning($mdDialog,"You must be connected");
      }
        else{
           var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
@@ -47,7 +47,7 @@ angular.
                 var myNewTestCase = data; 
                 $window.location.href = "#!/case/"+data[0].test_header_case_id;             
               }).error(function (data, status, headers, config) {
-   			          alert( "failure: " + data );
+   			          myDialog($mdDialog, data );
               });  
   }
   }
