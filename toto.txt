@@ -1,0 +1,26 @@
+diff --git a/www/appv2/case-detail/case-detail.template.html b/www/appv2/case-detail/case-detail.template.html
+index 057d8c5..1f7c6d4 100644
+--- a/www/appv2/case-detail/case-detail.template.html
++++ b/www/appv2/case-detail/case-detail.template.html
+@@ -81,7 +81,7 @@
+ <table>
+ <tr>  
+ <th></th>
+-<th class="firstRowResult" ng-repeat="product0 in $ctrl.products" title = "{{product0.name}}"> {{product0.rank}}</th>
++<th class="firstRowResult" ng-repeat="product0 in $ctrl.products" title = "{{product0.name.trim()}}"> {{product0.rank}}</th>
+ </tr>
+ <tr  ng-repeat="product1 in $ctrl.products">
+ <td class="firstColResult"> {{product1.rank}}. {{product1.name}} </td>
+diff --git a/www/appv2/dashboard/dashboard.template.html b/www/appv2/dashboard/dashboard.template.html
+index 3263c46..807f4af 100644
+--- a/www/appv2/dashboard/dashboard.template.html
++++ b/www/appv2/dashboard/dashboard.template.html
+@@ -24,7 +24,7 @@
+ <tr><td ng-style="execute.left"></td><td  ></td></tr></table>
+ </td>
+ </tr>
+-<tr><td>Percentage of tests that succeeded: </td><td class='cellRight'>{{$ctrl.stats.pct_execute_succeeded}} %
++<tr><td>Percentage of tests passed: </td><td class='cellRight'>{{$ctrl.stats.pct_execute_succeeded}} %
+ </td>
+ <td class='cellRight'>
+ <table class='pct_table'>

@@ -81,7 +81,7 @@
 <table>
 <tr>  
 <th></th>
-<th class="firstRowResult" ng-repeat="product0 in $ctrl.products" title = "{{product0.name}}"> {{product0.rank}}</th>
+<th class="firstRowResult" ng-repeat="product0 in $ctrl.products" title = "{{product0.name.trim()}}"> {{product0.rank}}</th>
 </tr>
 <tr  ng-repeat="product1 in $ctrl.products">
 <td class="firstColResult"> {{product1.rank}}. {{product1.name}} </td>
