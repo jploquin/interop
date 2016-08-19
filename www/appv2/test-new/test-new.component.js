@@ -5,8 +5,8 @@ angular.
   module('testNew',['ngMaterial']).
   component('testNew', {
   templateUrl: 'test-new/test-new.template.html',
-    controller: ['$routeParams','$location','$window','$scope','$http','$mdDialog',
-      function TestNewController($routeParams,$location,$window,$scope,$http,$mdDialog) {
+    controller: ['$routeParams','$location','$window','$scope','$http','$mdDialog','$rootScope',
+      function TestNewController($routeParams,$location,$window,$scope,$http,$mdDialog,$rootScope) {
         this.name="";
         this.description="";
         this.expected_result="";
@@ -37,17 +37,21 @@ angular.
           token: myObj.token
   
   		};	
-     
+   $rootScope.globalLoading++;  
    $http({
               url: '/node/saveTestCase',
               method: "POST",
               data: dataObj,
               headers: {'Content-Type': 'application/json'}
           }).success(function (data, status, headers, config) {
+          $rootScope.globalLoading--;
+          //myWarning($mdDialog,"ok");
                 var myNewTestCase = data; 
                 $window.location.href = "#!/case/"+data[0].test_header_case_id;             
               }).error(function (data, status, headers, config) {
-   			          myDialog($mdDialog, data );
+              $rootScope.globalLoading--;
+                  //myWarning($mdDialog,data);
+   			          myWarning($mdDialog, data );
               });  
   }
   }

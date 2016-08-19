@@ -1,5 +1,6 @@
 'use strict';
 
+
 // Register `productDetail` component, along with its associated controller and template
 angular.
   module('productDetail',['ngMaterial']).
@@ -61,6 +62,20 @@ angular.
               headers: {'Content-Type': 'application/json'}
           }).success(function (data, status, headers, config) {
               $rootScope.globalLoading--;
+              //reask product list
+                    $rootScope.globalLoading++;
+                    $http.get('/node/listProducts?token='+
+                                      $window.localStorage['jwt']).
+                          success(function(data) {
+                         // self.products = data;
+                          $rootScope.products = data;
+                          $rootScope.globalLoading--;
+                        })
+                        .error(function (data, status, headers, config) {
+                          $rootScope.globalLoading--;
+                        });
+
+              
               }).error(function (data, status, headers, config) {
                   $rootScope.globalLoading--;
    			          myWarning($mdDialog,data);

@@ -1,15 +1,14 @@
 \c interop interop
-drop table if exists product; 
-drop table if exists provider; 
-drop table if exists test_category; 
-drop table if exists test_header_case; 
-drop table if exists test_case; 
-drop table if exists test_result; 
-drop table if exists test_user; 
-
-drop view if exists test_header_case_result;
+/* drop view if exists test_header_case_result;
 drop view if exists stats;
-
+*/
+drop table if exists product cascade; 
+drop table if exists provider cascade; 
+drop table if exists test_category cascade; 
+drop table if exists test_header_case cascade; 
+drop table if exists test_case cascade; 
+drop table if exists test_result cascade; 
+drop table if exists test_user cascade; 
 
 create table product 
 (
@@ -116,9 +115,11 @@ create table  test_user
 	datemaj Date);
 
 
-create or replace view test_header_case_result (test_result_id,product_1_id,product_2_id)
-as select max(test_result_id),product_1_id,product_2_id from test_result where etat <>99 group by product_1_id, product_2_id;
+create or replace view test_header_case_result (test_result_id,test_header_case_id,product_1_id,product_2_id)                                                                                               as select max(test_result_id),test_header_case_id,product_1_id,product_2_id from test_result where etat <>99 group by test_header_case_id,product_1_id, product_2_id;
 
+/*create or replace view test_header_case_result (test_result_id,product_1_id,product_2_id)
+as select max(test_result_id),product_1_id,product_2_id from test_result where etat <>99 group by product_1_id, product_2_id;
+*/
 
 create or replace view stats (nb_products,nb_categories,nb_tests,nb_execute,nb_execute_failed,nb_execute_succeeded)
 as select
@@ -128,6 +129,23 @@ as select
 (select count(*) from test_result where etat<>99),
 (select count(*) from test_result r, test_header_case_result h where r.test_result_id=h.test_result_id and r.etat<>99 and r.result=0),
 (select count(*) from test_result r, test_header_case_result h where r.test_result_id=h.test_result_id and r.etat<>99 and r.result=1);
+
+insert into provider(name) values ('Alinto');
+
+create table static_stats (
+        statics_stat_id serial  primary key,
+	nb_products integer,
+	nb_categories integer,
+	nb_tests integer,
+	nb_execute integer,
+	nb_execute_failed integer,
+	nb_execute_succeeded integer,
+        etat smallint default 3,
+        usercre char(32),
+        usermaj char(32),
+        datecre Date default current_timestamp,
+        datemaj Date);
+
 
 insert into provider(name) values ('Alinto');
 insert into provider(name) values ('Aduneo');
@@ -205,7 +223,7 @@ insert into test_category (name) values ('Calendar');
 insert into test_category (name) values ('Simple Emails'); 
 insert into test_category (name) values ('Contacts'); 
 insert into test_category (name) values ('Accessibility'); 
-insert into test_category (name) values ('Folders'); 
+insert into test_category (name) values ('Shared folders'); 
 insert into test_category (name) values ('Instant messaging'); 
 
 insert into test_header_case (test_category_id,name) values (2,'accept and deny');
@@ -233,6 +251,7 @@ insert into test_case (test_header_case_id,description)
     
 
 insert into test_user (name,email,password,user_sso_id,etat) values ('Dinsic','jerome.ploquin@modernisation.gouv.fr','fanfaronfanfaron',645,3);
+/*
 insert into test_result (product_1_id, product_2_id,test_header_case_id, test_case_id, result, description, test_user_id, datecre) 
 values (1,2,1,1,1,'All is ok',1, '20160422'); 
 
@@ -248,7 +267,7 @@ values (3,8,1,1,1,'All is ok',1, '20160422');
 
 insert into test_result (product_1_id, product_2_id,test_header_case_id, test_case_id, result, description, test_user_id, datecre) 
 values (4,9,1,1,0,'Dont work',1, '20160422');  
-
+*/
 
 
 
@@ -269,22 +288,5 @@ insert into product(name) values ('');
 insert into product(name) values ('');
 insert into product(name) values ('');
 
-
-
-
-
-
-
-
-
-
-
-
-insert into  () values ();
-insert into  () values ();
-insert into  () values ();
-insert into  () values ();
-insert into  () values ();
-*/
 
 

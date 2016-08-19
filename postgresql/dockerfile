@@ -2,3 +2,4 @@ FROM postgres
 MAINTAINER Jerome ploquin
 COPY init-user-db.sh docker-entrypoint-initdb.d/init-user-db.sh
 COPY interop-create-db.sql docker-entrypoint-initdb.d/interop-create-db.sql
+COPY /patchs/* docker-entrypoint-initdb.d/

@@ -420,7 +420,7 @@ app.post('//saveResult', function (req, res) {
                 if (err) {
                     console.log(err);
                     done();
-                          return res.status(500).send(err);
+                          return res.status(500).send("Error while insert");
                 } else {
                     console.log('row inserted with id: ' + result.rows[0].test_result_id);
                     // SQL Query > Select Data
@@ -490,6 +490,7 @@ app.post('//saveTestCase', function (req, res) {
                 if (err) {
                     console.log(err);
                     done();
+                    return res.status(500).send("Error while insert");
                 } else {
                     console.log('row inserted with id: ' + result.rows[0].test_header_case_id);
                     var header_id = result.rows[0].test_header_case_id;
@@ -502,7 +503,7 @@ app.post('//saveTestCase', function (req, res) {
                           if (err) {
                               console.log(err);
                               done();
-                                    return res.status(500).send(err);
+                                    return res.status(500).send("Error while insert");
                           } else {
                               console.log('row inserted with id: ' + result.rows[0].test_case_id);
                               // SQL Query > Select Data
@@ -587,7 +588,7 @@ app.put('//updateTestCase', function(req, res) {
                           if (err) {
                               console.log(err);
                               done();
-                                    return res.status(500).send(err);
+                                    return res.status(500).send("Error while insert");
                           } else {
                               console.log('row inserted with id: ' + result.rows[0].test_case_id);
                               console.log ('End saveResult');
@@ -973,7 +974,7 @@ app.get('//getSSOLoginInfo', function (req, res) {
                         if (err) {
                             console.log(err);
                             done();
-                            return res.status(500).send(err);
+                            return res.status(500).send("Error while insert");
                             
                         } else {
                             console.log('row inserted with id: ' + result.rows[0].test_user_id);

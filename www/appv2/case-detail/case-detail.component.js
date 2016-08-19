@@ -131,6 +131,7 @@ angular.
 	$scope.posTop="0px";
  	$scope.posLeft="0px";
   $scope.loading++;
+  
   self.theComment="ddd"; //result comment
   self.matrixResults= new Array(64);//[64][64];//self.products.length][self.products.length];
   self.myRes = new Array(0);
@@ -146,6 +147,7 @@ angular.
 			$window.localStorage['jwt']).
             success(function(data) {
             self.headercase = data;
+            self.headercase.name=self.headercase.name.trim();
             $rootScope.globalLoading--;
 	    //$scope.loading --;
           }).error(function (data, status, headers, config) {
@@ -360,6 +362,61 @@ angular.
   };
 
 
+  $scope.nextTestCase = function(){
+    var myList = $rootScope.currentTestCaseList;
+    if (myList!=null && myList.length>0){
+      var fini=myList.length==0;
+      var trouve=false;
+      var cpt=0;
+      var monId=0;
+      while (!fini){
+        if (myList[cpt].test_header_case_id == self.caseId){
+          fini=true;
+          cpt++;
+          if (cpt<myList.length) {
+            trouve=true;
+            monId = myList[cpt].test_header_case_id;
+            
+          }
+        }
+        else{
+          cpt++;
+          fini=(cpt>=myList.length);
+        }
+      }
+      if (trouve){
+        $window.location.href = "#!/case/"+monId;
+      }
+    }
+    
+  };
+  $scope.previousTestCase = function($id){
+    var myList = $rootScope.currentTestCaseList;
+    if (myList!=null && myList.length>0){
+      var fini=myList.length==0;
+      var trouve=false;
+      var cpt=0;
+      var monId=0;
+      while (!fini){
+        if (myList[cpt].test_header_case_id == self.caseId){
+          fini=true;
+          cpt--;
+          if (cpt>=0) {
+            trouve=true;
+            monId = myList[cpt].test_header_case_id;
+            
+          }
+        }
+        else{
+          cpt++;
+          fini=(cpt>=myList.length);
+        }
+      }
+      if (trouve){
+        $window.location.href = "#!/case/"+monId;
+      }
+    }
+  };
 
   $scope.clickNewResult= function(){
   $scope.writeNewResult=true;

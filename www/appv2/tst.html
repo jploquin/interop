@@ -1,12 +1,56 @@
 <!doctype html>
-<html lang="en" ng-app="interopApp">
+<html lang="en" >
   <head>
     <meta charset="utf-8">
-    <script src="case-detail/case-detail.component.js"></script>
- </head>
+    <title>Email systems interoperability</title>
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">    
+    <link rel="stylesheet" href="app.css" />
+    <!--link rel="stylesheet" href="https://material.angularjs.org/1.1.0/docs.css" /-->
+    
+    
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.min.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/angular-material/angular-material.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="bower_components/angular-messages/angular-messages.min.js"></script>
+    
+    <script>
+(function() {
+  'use strict';
+
+  angular.module('MyApp',['ngMaterial', 'ngMessages', 'material.svgAssetsCache'])
+      .controller('AppCtrl', AppCtrl);
+
+  function AppCtrl($scope) {
+    $scope.currentNavItem = 'page2';
+  }
+})();
+
+  </script>
+  </head>
   <body>
 
-
-<p> s </p>   
+<div ng-app="MyApp" class="navBardemoBasicUsage" ng-controller="AppCtrl" ng-cloak="">
+  <md-content class="md-padding">
+    <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
+      <md-nav-item md-nav-click="goto('page1')" name="page1">Page One</md-nav-item>
+      <md-nav-item md-nav-click="goto('page2')" name="page2">Page Two</md-nav-item>
+      <md-nav-item md-nav-click="goto('page3')" name="page3">Page Three</md-nav-item>
+      <!-- these require actual routing with ui-router or ng-route, so they won't work in the demo
+      <md-nav-item md-nav-sref="app.page4" name="page4">Page Four</md-nav-item>
+      <md-nav-item md-nav-href="#page5" name="page5">Page Five</md-nav-item>
+      -->
+    </md-nav-bar>
+    <div class="ext-content">
+      External content for `<span>{{currentNavItem}}</span>`
+    </div>
+  </md-content></div>
+<p>end</p>
+<!--
+Copyright 2016 Google Inc. All Rights Reserved. 
+Use of this source code is governed by an MIT-style license that can be foundin the LICENSE file at http://material.angularjs.org/HEAD/license.
+-->
   </body>
 </html>

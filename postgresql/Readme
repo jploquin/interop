@@ -24,6 +24,13 @@ that's all.
 To open an interactive session:
 connect-database.sh
 
-don't forget to make a backup procedure ...
+don't forget to make a backup procedure.
+Insert in the crontab (crontab -e):
+0 4 * * * /home/cloud/interop/postgresql/simple-bck.sh>>'/home/cloud/interop/postgresql/mydump.sql'.$(date -I)
+0 3 * * * find /home/cloud/interop/postgresql/mydump.sql* -mtime +20 -exec rm {} \;
+~
+The first entry to backup each day, the second to purge
+
+
 here's a restore example:
 cat backup.sql.dump | docker run -i --rm --link c_interop-postgres:c_interop-postgres postgres psql -h c_interop-postgres -U interop interop

@@ -1,14 +1,24 @@
 <div>
-<p class="subtitle"> Category<hr> </p>
+<div layout="column" layout-fill>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <span>TEST CATEGORY: {{$ctrl.category.name}} </span>
+      <!-- fill up the space between left and right area -->
+      <span flex></span>
+    </div>
+  </md-toolbar>  
+</div>
+<br>
+<!-- p class="subtitle"> Category<hr> </p-->
 <table>
 <tr>
-<td>Name:  </td><td><input type="text" size=32 maxlength=32 name="country" ng-model=$ctrl.category.name>
+<td>Name:  </td><td><input type="text" size=32 maxlength=32 name="country" ng-model=$ctrl.category.name readonly>
 </td>
 </tr>
 <tr>
 <td> Description:</td>
 <td>
-<textarea rows="4" cols="130" maxlength=512 ng-model = $ctrl.category.description>
+<textarea rows="4" cols="80" maxlength=512 ng-model = $ctrl.category.description>
 </textarea>
  </td>
 </tr>
@@ -17,7 +27,7 @@
 <hr>
 <table>
 <tr>
-<td style='width:250px;'>List of test cases <!-- a style="" ng-click = "testLog()" class="icon icon-save" href="">test log</a--!>
+<td style='width:250px;'>List of test cases 
 </td>
 <td><a style="margin-left:20px" class="icon icon-add" href="#!/testNew/{{$ctrl.category.test_category_id}}">New test case</a>
 </td>
@@ -25,7 +35,7 @@
 </table>
 
      <ul class="cas">
-        <li     ng-repeat="cas in $ctrl.cas"
+        <li     ng-repeat="cas in $root.currentTestCaseList"
                 class="listCas">
 		<a href="#!/case/{{cas.test_header_case_id}}">{{cas.name}}</a> 
           <p> {{cas.id}}</p>

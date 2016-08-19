@@ -66,6 +66,12 @@ body {
 .icon-delete {
     background-image: url("../img/delete-icon.png");
 }
+.icon-next {
+    background-image: url("../img/next-icon.png");
+}
+.icon-previous {
+    background-image: url("../img/previous-icon.png");
+}
 
 .icon-cross {
     background-image: url("../img/cross.png");
@@ -162,3 +168,23 @@ border:solid 1px grey;
 width:100px;
 height:8px;
 }
+.inactive_product:link {
+color:red;
+}
+.inactive_product:visited {
+color:red;
+}
+.inactive_product:hover {
+color:red;
+}
+.inactive_product:active {
+color:red;
+}
+
+
+.navBardemoBasicUsage md-content .ext-content {
+  padding: 50px;
+  margin: 20px;
+  background-color: #FFF2E0; }
+
+

@@ -19,6 +19,7 @@ angular.
 			$window.localStorage['jwt']).
             success(function(data) {
             self.category = data;
+            self.category.name=self.category.name.trim();
       $rootScope.globalLoading--;
       
 	//get list of test cases
@@ -27,7 +28,7 @@ angular.
   	$http.get('/node/listCases?categoryId='+self.themeId+'&token='+
 			$window.localStorage['jwt']).
             success(function(data) {
-            self.cas = data;
+            $rootScope.currentTestCaseList=data;//self.cas = data;
       $rootScope.globalLoading--;
       
 //	    $scope.loading--;

@@ -69,6 +69,9 @@ angular.
 //        $rootScope.testClient = false;
 //	 $rootScope.token=0;
    $rootScope.globalLoading=0;
+   $rootScope.products={};
+   if ($rootScope.currentTestCaseList==null) $rootScope.currentTestCaseList={};
+   if ($rootScope.currentTestCaseNavItem==null) $rootScope.currentTestCaseNavItem = 'page1';
 //   
 //   $rootScope.connected=0;
    

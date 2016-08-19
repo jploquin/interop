@@ -2,7 +2,8 @@
 
 <div id="divDetail" >
 
-  <div id="divChangeResult"  ng-show="loadingChangeResult" 
+  
+  <div id="divChangeResult"  ng-show="loadingChangeResult && $root.currentTestCaseNavItem=='page2'" 
   class="divResult"
   ng-style="{'top':posTop,'left':posLeft}">
 
@@ -42,8 +43,34 @@
     </div>
 </div>    
   </div>
- 
-<p class="subtitle"> Test case <hr> </p>
+
+<div layout="column" layout-fill>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <span>TEST CASE: {{$ctrl.headercase.name}} </span>
+      <!-- fill up the space between left and right area -->
+      <span flex></span>
+      <md-button ng-click = "previousTestCase()" title = 'Previous test case of category' >
+        Previous
+      </md-button>
+      <md-button ng-click = "nextTestCase()" title = 'Next test case of category' >
+        Next
+      </md-button>
+    </div>
+  </md-toolbar>
+  
+</div>
+<md-content class="md-padding">
+    <md-nav-bar md-selected-nav-item="$root.currentTestCaseNavItem" nav-bar-aria-label="navigation links">
+      <md-nav-item md-nav-click="goto('page1')" name="page1">Description</md-nav-item>
+      <md-nav-item md-nav-click="goto('page2')" name="page2">Test results</md-nav-item>
+
+    </md-nav-bar>
+
+  </md-content>
+
+
+<div ng-show="$root.currentTestCaseNavItem=='page1'">
 <table>
 <tr>
 <td>Name:  </td><td><input style='width:300px' maxlength=32 type="text" name="" ng-model=$ctrl.headercase.name>
@@ -52,7 +79,7 @@
 <tr>
 <td> Description:</td>
 <td>
-<textarea rows="4" maxlength=512 cols="130" ng-model = $ctrl.case.description>
+<textarea rows="4" maxlength=512 cols="80" ng-model = $ctrl.case.description>
 </textarea>
  </td>
 </tr>
@@ -60,21 +87,30 @@
 <tr>
 <td> Expected results:</td>
 <td>
-<textarea rows="4" cols="130" maxlength=512 ng-model = $ctrl.case.expected_result>
+<textarea rows="4" cols="80" maxlength=512 ng-model = $ctrl.case.expected_result>
 </textarea>
  </td>
 </tr>
+<tr>
+<td></td>
+<td>
+<a style="margin-right:100px" ng-click = "updateTestCase()" class="icon icon-save" href="">Save</a>
+<a style="" ng-click = "deleteTestCase()" class="icon icon-delete" href="">Delete</a>
+</td>
+</tr>
 </table>
-<table>
+<!-- table>
 <tr>
 <td style='width:150px'><a style="" ng-click = "updateTestCase()" class="icon icon-save" href="">Save</a></td>
 <td><a style="" ng-click = "deleteTestCase()" class="icon icon-delete" href="">Delete</a></td>
 </tr>
-</table>
+</table-->
 
 <hr>
+</div>
+
+<div ng-hide="$root.currentTestCaseNavItem=='page1'">
 <p> Results <small>(click on a cell to see or change the result)</small>:</p> 
-<div>
 
 
 <div style="float:top"  ng-hide="globalLoading"> 
