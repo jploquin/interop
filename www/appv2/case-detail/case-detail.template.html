@@ -1,10 +1,10 @@
 
 
-<div id="divDetail" >
+<div id="divDetail" ng-keyup="testKeyUp($event)">
 
   
-  <div id="divChangeResult"  ng-show="loadingChangeResult && $root.currentTestCaseNavItem=='page2'" 
-  class="divResult"
+  <div id="divChangeResult"  ng-show="loadingChangeResult && $root.currentTestCaseNavItem=='page2'" aria-live="assertive"
+  class="divResult" style="z-index:9"
   ng-style="{'top':posTop,'left':posLeft}">
 
     <div class="headDialog">
@@ -13,17 +13,18 @@
       <p> from {{$ctrl.product1.name}}
       <br> to {{$ctrl.product2.name}} </p>
       </td>
-      <td class='icon-close' style='width:16px' ng-click="closeDiv()" valign='top'>&nbsp;</td>
+      <td id="changeResultCloseButton" focus-me="loadingChangeResult && $root.currentTestCaseNavItem=='page2'"
+          class='icon-close' style='width:16px' ng-click="closeDiv()" valign='top'>&nbsp;</td>
       </tr>
       </table>
     </div>
 <div class='newResult'>
     <div id="newResult"  ng-show="writeNewResult">
-      <p><textarea style='width:90%; margin:5px' placeholder="Comments ..." ng-model="$ctrl.theComment"></textarea></p>
+      <p><textarea id="resultComment" aria-label="comments about the test result" style='width:90%; margin:5px' placeholder="Comments ..." ng-model="$ctrl.theComment"></textarea></p>
       <table><tr>
       <td style='width:80%'> Click to record the test result:</td>
-      <td valign='middle' style='width:30px;text-align:center;font-size:8pt' ng-click="writeResult(1)" class='icon-green'>OK</td>
-      <td valign='middle' style='width:30px;text-align:center;font-size:8pt' ng-click="writeResult(0)" class='icon-red'>KO</td>
+      <td id="writeResultOk"   valign='middle' style='width:30px;text-align:center;font-size:8pt' ng-click="writeResult(1)" class='icon-green'>OK</td>
+      <td id="writeResultKo" valign='middle' style='width:30px;text-align:center;font-size:8pt' ng-click="writeResult(0)" class='icon-red'>KO</td>
       </tr>
       </table>
     </div>
@@ -36,7 +37,7 @@
       <table style='width:98%'>
       <tr  ng-repeat="res in $ctrl.myRes">
       <td style='width:16%'> <div style='' ng-class="{0:'little-icon-red', 1:'little-icon-green'}[res.result]">&nbsp;</div> </td>
-      <td style='border-bottom:solid 1px grey'> by <b>{{res.username}}</b>, {{res.datecre.substring(0,10)}} <br>{{res.description}}</td>
+      <td aria-label={{getLabelResult(res.result)}} style='border-bottom:solid 1px grey'> by <b>{{res.username}}</b>, {{res.datecre.substring(0,10)}} <br>{{res.description}}</td>
       <td style='width:10px' title='Supprimer'  ng-click='deleteResult(res.test_result_id)'><img style='cursor:pointer' src='../img/delete-icon.png'></img></td>
       </tr>
       </table>
@@ -73,13 +74,13 @@
 <div ng-show="$root.currentTestCaseNavItem=='page1'">
 <table>
 <tr>
-<td>Name:  </td><td><input style='width:300px' maxlength=32 type="text" name="" ng-model=$ctrl.headercase.name>
+<td>Name:  </td><td><input aria-label="Test case name" style='width:300px' maxlength=32 type="text" name="" ng-model=$ctrl.headercase.name>
 </td>
 </tr>
 <tr>
 <td> Description:</td>
 <td>
-<textarea rows="4" maxlength=512 cols="80" ng-model = $ctrl.case.description>
+<textarea aria-label="Test case description" rows="4" maxlength=8224 cols="80" ng-model = $ctrl.case.description>
 </textarea>
  </td>
 </tr>
@@ -87,7 +88,7 @@
 <tr>
 <td> Expected results:</td>
 <td>
-<textarea rows="4" cols="80" maxlength=512 ng-model = $ctrl.case.expected_result>
+<textarea aria-label="Test case expected result" rows="4" cols="80" maxlength=8224 ng-model = $ctrl.case.expected_result>
 </textarea>
  </td>
 </tr>
@@ -110,26 +111,40 @@
 </div>
 
 <div ng-hide="$root.currentTestCaseNavItem=='page1'">
-<p> Results <small>(click on a cell to see or change the result)</small>:</p> 
+<!--span> Results <small>(click on a cell to see or change the result)</small>:</span--> 
 
 
 <div style="float:top"  ng-hide="globalLoading"> 
-<table>
+
+
+<!--table ng-class="tableRotatedClass"-->
+<table class="table-header-rotated">
+<caption>Results (click on a cell to see or change the result):</caption>
+<thead>
 <tr>  
 <th></th>
-<th class="firstRowResult" ng-repeat="product0 in $ctrl.products" title = "{{product0.name.trim()}}"> {{product0.rank}}</th>
-</tr>
-<tr  ng-repeat="product1 in $ctrl.products">
-<td class="firstColResult"> {{product1.rank}}. {{product1.name}} </td>
-<td id="changeResult{{product1.rank}}::{{product2.rank}}" class="tdResult" ng-repeat="product2 in $ctrl.products" 
-title = "From {{product1.name.trim()}} to {{product2.name.trim()}}">
+<th class="firstRowResult" ng-class="thRotatedClass" ng-repeat="product0 in $ctrl.products" title = "{{product0.name.trim()}}"> 
+<div><span>{{product0.label}}</div></span>
 
-<div ng-class="getClassResult({{product1.rank}},{{product2.rank}})" 
-ng-click = 'changeResult(product1.rank,product2.rank)'>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr  ng-repeat="product1 in $ctrl.products">
+<td class="firstColResult" style='width:200px'> {{product1.rank}}. {{product1.name}} </td>
+<td id="changeResult{{product1.rank}}::{{product2.rank}}" class="tdResult" ng-repeat="product2 in $ctrl.products" 
+>
+
+<div id="divChangeResult{{product1.rank}}::{{product2.rank}}" ng-class="getClassResult({{product1.rank}},{{product2.rank}})" 
+ng-click = 'changeResult(product1.rank,product2.rank)'
+title="From {{product1.name.trim()}} to {{product2.name.trim()}}, {{getTextResult(product1.rank,product2.rank)}}"
+role="button"
+aria-label="From {{product1.name.trim()}} to {{product2.name.trim()}}, {{getTextResult(product1.rank,product2.rank)}}">
 </div>
 
 </td>
 </tr>
+</tbody>
 </table>
 </div>
 </div>

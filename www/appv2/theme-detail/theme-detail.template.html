@@ -2,7 +2,7 @@
 <div layout="column" layout-fill>
   <md-toolbar>
     <div class="md-toolbar-tools">
-      <span>TEST CATEGORY: {{$ctrl.category.name}} </span>
+      <span id="myTitle">TEST CATEGORY:</span><span> {{$ctrl.category.name}} </span>
       <!-- fill up the space between left and right area -->
       <span flex></span>
     </div>
@@ -12,13 +12,14 @@
 <!-- p class="subtitle"> Category<hr> </p-->
 <table>
 <tr>
-<td>Name:  </td><td><input type="text" size=32 maxlength=32 name="country" ng-model=$ctrl.category.name readonly>
+<td><label id="labelname" for="categoryName">Name:</label></td><td>
+<input aria-labelledby="myTitle labelname" id="categoryName" type="text" size=32 maxlength=32 name="country" ng-model=$ctrl.category.name readonly>
 </td>
 </tr>
 <tr>
-<td> Description:</td>
+<td><label id="labeldesc" for="categoryDesc"> Description:</td>
 <td>
-<textarea rows="4" cols="80" maxlength=512 ng-model = $ctrl.category.description>
+<textarea aria-labelledby="myTitle labeldesc" id="categoryDesc" rows="4" cols="80" maxlength=512 ng-model = $ctrl.category.description>
 </textarea>
  </td>
 </tr>

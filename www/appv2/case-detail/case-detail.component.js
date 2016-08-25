@@ -1,10 +1,50 @@
 'use strict';
+
 /* 
 	Case detail management.
 	Manage case modifications and results modifications.
 */
 
+function get_browser(){
+    var ua=navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []; 
+    if(/trident/i.test(M[1])){
+        tem=/\brv[ :]+(\d+)/g.exec(ua) || []; 
+        return {name:'IE',version:(tem[1]||'')};
+        }   
+    if(M[1]==='Chrome'){
+        tem=ua.match(/\bOPR\/(\d+)/)
+        if(tem!=null)   {return {name:'Opera', version:tem[1]};}
+        }   
+    M=M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+    if((tem=ua.match(/version\/(\d+)/i))!=null) {M.splice(1,1,tem[1]);}
+    return {
+      name: M[0],
+      version: M[1]
+    };
+ }
+ 
+  
 
+
+function transformationSupported(){
+//i tried with modernizr but it didn't work ...
+var isIE = /*@cc_on!@*/false || !!document.documentMode;
+var isEdge = !isIE && !!window.StyleMedia;
+var ret=isEdge;
+
+if (!ret){
+  var br = get_browser();
+  var brname=br.name;
+  var brversion=parseInt(br.version,10);
+  
+  if (brname=="Chrome" && brversion>=36) ret=true;
+  else if (brname=="IE" && brversion>=10) ret=true;
+  else if (brname=="Firefox" && brversion>=16) ret=true;
+ else if (brname=="Safari" && brversion>=9) ret=true;
+  else if (brname=="Opera" && brversion>=23) ret=true;
+}
+return ret;
+}
 
 //Calculate the position to make the changeresult div appear
 function myPosition(element, thediv){
@@ -19,6 +59,9 @@ function myPosition(element, thediv){
                 el2 = el2.offsetParent;
  
 	}
+   //position ok button on the cursor
+   cx -=240;
+   cy -=160;
     return { top: cy, left: cx };
 }
 
@@ -126,6 +169,12 @@ angular.
         this.caseId = $routeParams.caseId;
 	var self = this;
 	
+  $scope.thRotatedClass="";
+  $scope.tableRotatedClass="";
+  if (transformationSupported()){
+    $scope.thRotatedClass="rotate";
+    $scope.tableRotatedClass="table-header-rotated";
+  }
 	$scope.loading=0;
 	$scope.loadingChangeResult=0;
 	$scope.posTop="0px";
@@ -147,7 +196,7 @@ angular.
 			$window.localStorage['jwt']).
             success(function(data) {
             self.headercase = data;
-            self.headercase.name=self.headercase.name.trim();
+            if (self.headercase.name !=null) self.headercase.name=self.headercase.name.trim();
             $rootScope.globalLoading--;
 	    //$scope.loading --;
           }).error(function (data, status, headers, config) {
@@ -163,6 +212,8 @@ angular.
 			$window.localStorage['jwt']).
             success(function(data) {
             self.case = data;
+            if (self.case.description!=null) self.case.description = self.case.description.trim();
+            if (self.case.expected_result!=null) self.case.expected_result = self.case.expected_result.trim();
             $rootScope.globalLoading--;
 	   // $scope.loading --;
           });
@@ -175,8 +226,15 @@ angular.
             success(function(data) {
             self.products = data;
 	    var i=0;
-	    for ( i=0;i<self.products.length;i++)
-		self.products[i].rank = i+1;
+	    for ( i=0;i<self.products.length;i++){
+    		self.products[i].rank = i+1;
+    		self.products[i].label = self.products[i].rank;
+       
+        if (transformationSupported()){
+         self.products[i].label += ".  ";
+         self.products[i].label += self.products[i].name;
+        }
+      }
 	  //  $scope.loading --;
          
 	//get result list to construct the matrix of results: 
@@ -229,13 +287,27 @@ angular.
 		  }
 		  $scope.loadingChangeResult++;
 
+//      document.getElementById("writeResultOk").focus();        
+
 //	  }
   	};
+	//cell clicked
+	$scope.testKeyUp = function(event) {
+      if(event.which === 27)
+		    $scope.closeDiv();//loadingChangeResult=0;
 
+//	  }
+  	};
   // write a new result
   $scope.writeResult= function(testResult){
      if ($window.sessionStorage['myLogin']==null){
        myWarning($mdDialog,"You must be connected");
+       $scope.closeDiv();
+//       $scope.loadingChangeResult=0;
+/*
+       var elt = document.getElementById("changeResult"+self.product1.rank+"::"+self.product2.rank);
+       if (elt!=null) elt.focus();
+*/
      }
      else{
         var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
@@ -261,9 +333,10 @@ angular.
           			$scope.message = data;
                 //put the new result at first
                 self.results.splice(0,0,data[0]);
-                $scope.loadingChangeResult=0;
+                $scope.closeDiv();//$scope.loadingChangeResult=0;
               }).error(function (data, status, headers, config) {
    			          myWarning($mdDialog,data);
+                  $scope.closeDiv();//$scope.loadingChangeResult=0;
               });  
      }
   };
@@ -330,7 +403,7 @@ angular.
      } 
   };
 
-  // delete a result
+  // delete a testcase
   $scope.deleteTestCase= function(){
     if (self.results.length>0){
       myWarning($mdDialog,"The test case can't be deleted: there are results attached to it");
@@ -420,11 +493,32 @@ angular.
 
   $scope.clickNewResult= function(){
   $scope.writeNewResult=true;
+  setTimeout(function(){
+   var elt = document.getElementById("resultComment");
+    if (elt!=null) {
+      elt.focus();
+    }
+
+},50);
+
   };
 
-	$scope.closeDiv= function($rank1,$rank2) {
+	$scope.closeDiv= function() {
 		$scope.loadingChangeResult=0;
+    var elt = document.getElementById("divChangeResult"+self.product1.rank+"::"+self.product2.rank);
+    if (elt!=null) {
+      elt.focus();
+    }
+/*setTimeout(function(){
+   var elt = document.getElementById();
+    if (elt!=null) {
+      elt.focus();
+    }
+
+},50);
+*/
 	};
+ 
 	$scope.getClassResult = function ($rank1,$rank2) {
 	  var ret="cellResult icon-cross";
 	 // if ($rank1 != $rank2){
@@ -437,6 +531,41 @@ angular.
 		  break;
 		case 1: 
 		  ret = "cellResult icon-green";
+		  break;
+	   }
+	 // }
+	  return ret;
+	};
+	$scope.getTextResult = function ($rank1,$rank2) {
+	  var ret="";
+     ret = $scope.getLabelResult(self.matrixResults[$rank1-1][$rank2-1]);
+/*	   switch (	self.matrixResults[$rank1-1][$rank2-1]){
+		case -1: 
+		  ret = "test not yet executed";
+		  break;
+		case 0: 
+		  ret = "test failed";
+		  break;
+		case 1: 
+		  ret = "test passed";
+		  break;
+	   }
+       */
+	 // }
+	  return ret;
+	};
+	$scope.getLabelResult = function (res) {
+	  var ret="";
+	 // if ($rank1 != $rank2){
+	   switch (	res){
+		case -1: 
+		  ret = "test not yet executed";
+		  break;
+		case 0: 
+		  ret = "test failed";
+		  break;
+		case 1: 
+		  ret = "test passed";
 		  break;
 	   }
 	 // }

@@ -73,8 +73,8 @@ create table  test_case
 (
 	test_case_id serial  primary key,
 	test_header_case_id integer,
-	description varchar(512),
-	expected_result varchar(512),
+	description varchar(8224),
+	expected_result varchar(8224),
 	version char(32),
 	etat smallint default 3,
 	cre_test_user_id integer,

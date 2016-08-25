@@ -30,6 +30,7 @@ angular.
 			myToken+'&username='+username).
             success(function(data) {
             self.product = data;
+            if (self.product.description!=null) self.product.description=self.product.description.trim();
             $rootScope.globalLoading--;
 //	    $scope.loading --;
           }).error(function (data, status, headers, config) {

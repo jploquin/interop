@@ -1,16 +1,103 @@
 <!doctype html>
-<html lang="en" class="no-js">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>Email systems interoperability</title>
-    <link rel="stylesheet" href="tst.css" />
-    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/modernizr-2.7.1.js"></script>
-    <!-- script src="modernizr-custom.min.js"></script-->
+    <link rel="stylesheet" href="tst2.css" />
 
-
+<script>
+function get_browser(){
+    var ua=navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || []; 
+    if(/trident/i.test(M[1])){
+        tem=/\brv[ :]+(\d+)/g.exec(ua) || []; 
+        return {name:'IE',version:(tem[1]||'')};
+        }   
+    if(M[1]==='Chrome'){
+        tem=ua.match(/\bOPR\/(\d+)/)
+        if(tem!=null)   {return {name:'Opera', version:tem[1]};}
+        }   
+    M=M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+    if((tem=ua.match(/version\/(\d+)/i))!=null) {M.splice(1,1,tem[1]);}
+    return {
+      name: M[0],
+      version: M[1]
+    };
+ }
+</script>
 
   </head>
   <body>
+
+<style style="text/css">
+
+table {
+  overflow: hidden;
+font-weight:normal;
+}
+
+tr:hover {
+  background-color: #ffa;
+font-weight:bold;}
+
+td, th {
+  position: relative;
+ font-weight:normal; 
+}
+td:hover::after,
+th:hover::after {
+  content: "";
+  position: absolute;
+  background-color: #ffa;
+  left: 0;
+  top: -5000px;
+  height: 10000px;
+  width: 100%;
+  z-index: -1;
+  font-weight:bold;
+}
+</style>
+<!-- style style="text/css">
+  	.hoverTable{
+		width:100%; 
+		border-collapse:collapse; 
+	}
+	.hoverTable td .firstCol { 
+		padding:7px; border:#4e95f4 1px solid;
+	}
+	/* Define the default color for all the table rows */
+	.hoverTable tr .firstCol {
+		background: #b8d1f3;
+	}
+	/* Define the hover highlight color for the table row */
+    .hoverTable tr:hover .firstCol {
+          background-color: #ffff99;
+    }
+    .hoverTable th:hover,
+    thead th:not(:empty):hover,
+    tr:not(:first-child):hover  {
+          background-color: #ffff99;
+    }
+</style-->
+
+<table class="hoverTable">
+<thead>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+</thead>
+<tbody>
+	<tr>
+		<td class="firstCol" >Text 1A</td><td>Text 1B</td><td>Text 1C</td>
+	</tr>
+	<tr>
+		<td class="firstCol" >Text 2A</td><td>Text 2B</td><td>Text 2C</td>
+	</tr>
+	<tr>
+		<td class="firstCol" >Text 3A</td><td>Text 3B</td><td>Text 3C</td>
+	</tr>
+</tbody>
+</table>
+
 
 <table class="table table-header-rotated" style="word-wrap: break-word;">
   <thead>
@@ -56,9 +143,6 @@
     </tr>
   </tbody>
 </table>
-<button onclick="alert(Modernizr.csstransforms)">bouton csstr</button>
-<button onclick="alert(Modernizr.testProp('transform:rotate'))">tst rot</button>
-<button onclick="alert(Modernizr.testProp('CSS Transforms'))">bouton testProp</button>
-<button onclick="alert(Modernizr.testAllProps('csstransforms'))">bouton testallProp</button>
+<button onclick="alert(get_browser().name+'::'+parseInt(get_browser().version,10))">bouton getb</button>
   </body>
 </html>

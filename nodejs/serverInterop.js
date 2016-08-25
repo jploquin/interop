@@ -336,7 +336,79 @@ app.get('//listCases', function (req, res) {
 
 });
 
+//list most completed test cases
+app.get('//listMostCompletedCases', function (req, res) {
+ 
+    var results = [];
+//    var id = req.param('categoryId');
+    console.log('Start listMostCompletedCases'); 
+ 
+	
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+          done();
+          console.log(err);
+      return res.status(500).send(err);
+        }
 
+        // SQL Query > Select Data
+        var query = client.query("SELECT  t.*, (select count(*) from test_result where test_header_case_id=t.test_header_case_id and etat<>99) compte, (select name from test_category tc where tc.test_category_id=t.test_category_id) categoryName from test_header_case t where t.etat<>99 order by compte desc limit 5;");
+
+ 
+        // Stream results back one row at a time
+        query.on('row', function(row) {
+            results.push(row);
+        });
+
+        // After all data is returned, close connection and return results
+        query.on('end', function() {
+           console.log('End listMoreCompletedCases'); 
+           done();
+            return res.json(results);
+        });
+
+    });
+
+});
+
+//list most completed test cases
+app.get('//listLastCases', function (req, res) {
+ 
+    var results = [];
+//    var id = req.param('categoryId');
+    console.log('Start listLastCases'); 
+ 
+	
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+          done();
+          console.log(err);
+      return res.status(500).send(err);
+        }
+
+        // SQL Query > Select Data
+        var query = client.query("SELECT  t.*,  (select name from test_category tc where tc.test_category_id=t.test_category_id) categoryName from test_header_case t where t.etat<>99 order by datecre desc limit 5;");
+
+ 
+        // Stream results back one row at a time
+        query.on('row', function(row) {
+            results.push(row);
+        });
+
+        // After all data is returned, close connection and return results
+        query.on('end', function() {
+           console.log('End listLastCases'); 
+           done();
+            return res.json(results);
+        });
+
+    });
+
+});
 
 
 //list results of a case
@@ -754,25 +826,54 @@ app.put('//deleteResult', function(req, res) {
           console.log(err);
           return res.status(500).send(err);
         }
-
-        // SQL Query > Update Data
-        client.query("UPDATE test_result SET ETAT=99, test_user_id=($1), datemaj=current_timestamp WHERE test_result_id=($2)", 
-              [userId,id],
-            function(err, result) {
-                if (err) {
-                    console.log(err);
-                    done();
-                    return res.status(500).send(err);
-                } else {
-                    console.log('row updated');
-                    console.log (id+'::'+data.description);
-                    done();
-                    return res.json(results);                   
-                }
-              }                   
-        );
-
+        
+        
+        
+        // SQL Query > Select Data
+        var query = client.query(
+      		"select test_user_id FROM test_result WHERE test_result_id="+id);
  
+        // Stream results back one row 
+        query.on('row', function(row) {
+        done(); 
+        if (row.test_user_id != userId){
+            console.log('bad user,test-result_id='+id+'datauserid='+row.test_user_id+'::userid='+userId);
+            done();
+            err = "You can't delete a result that you didn't create";
+            return res.status(500).send(err); 
+        }
+        else{
+        
+           // SQL Query > Update Data
+            client.query("UPDATE test_result SET ETAT=99, test_user_id=($1), datemaj=current_timestamp WHERE test_result_id=($2)", 
+                  [userId,id],
+                function(err, result) {
+                    if (err) {
+                        console.log(err);
+                        done();
+                        return res.status(500).send(err);
+                    } else {
+                        console.log('row updated');
+                        console.log (id+'::'+data.description);
+                        done();
+                        return res.json(results);                   
+                    }
+                  }                   
+            );
+          
+        }
+//            return res.json(row);
+ //           results.push(row);
+        });
+
+
+        
+        
+        
+
+
+
+  
     });
 
 });
@@ -813,13 +914,19 @@ app.put('//deleteTestCase', function(req, res) {
 //  ------------------------
 // don't supress if test results
       var query = client.query("SELECT * FROM test_result where etat<>99 and test_header_case_id = "+id);
+      var continu=true;
 
       // Stream results back one row at a time
       query.on('row', function(row) {
         err = "There are results attached to the test case";
-        return res.status(500).send(err);
+        done();
+        continu=false;
+        
       });
-
+      query.on('end', function(row) {
+      if (!continu)
+        return res.status(500).send(err);
+      else{
         // SQL Query > Update Data
         client.query("UPDATE test_header_case SET ETAT=99, maj_test_user_id=($1), datemaj=current_timestamp WHERE test_header_case_id=($2)", 
               [userId,id],
@@ -835,7 +942,10 @@ app.put('//deleteTestCase', function(req, res) {
                 }
               }                   
         );
-    });
+      }
+      
+     });
+     });
 });
 
 
@@ -1040,6 +1150,30 @@ app.get('//getSSOLoginInfo', function (req, res) {
 
 
 });
+
+
+//crash on purpose
+app.get('//crash', function (req, res) {
+    var results = [];
+  /*  
+    
+    var myTokenObject = getObjectFromToken(req.body.token);
+    if (myTokenObject==null || (!verifyTokenObject(myTokenObject,req))){
+      err = "Action not permitted";
+      return res.status(500).send(err);      
+    }
+    else {
+      userId = myTokenObject.userId;    
+*/
+
+    var myMonkey=12;
+    var myBadAss=0;
+    myMonkey= myMonkey/myBadAss;
+
+return res.json(results);
+
+});
+
 
 function isUserExists(myReturn){
 

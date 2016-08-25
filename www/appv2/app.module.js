@@ -2,6 +2,7 @@
 
 // Define the `interopApp` module
 angular.module('interopApp', [
+  'ngAria',
   'ngRoute',
   'themeDetail',
   'productDetail',

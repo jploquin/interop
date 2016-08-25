@@ -36,6 +36,30 @@ angular.
               "background-color" : "rgb(0,153,255)",
           }
             $rootScope.globalLoading--;
+
+            $rootScope.globalLoading++;
+           	$http.get('/node/listMostCompletedCases').
+              success(function(data) {
+                $rootScope.MostCompletedTestCaseList=data;//self.cas = data;
+                $rootScope.globalLoading--;
+      
+                $rootScope.globalLoading++;
+                $http.get('/node/listLastCases').
+                  success(function(data) {
+                $rootScope.LastTestCaseList=data;//self.cas = data;
+                $rootScope.globalLoading--;
+      
+//	    $scope.loading--;
+                }).error(function (data, status, headers, config) {
+                    $rootScope.globalLoading--;
+                }); 
+      
+      
+//	    $scope.loading--;
+            }).error(function (data, status, headers, config) {
+                  $rootScope.globalLoading--;
+              }); 
+      
       
 //	    $scope.loading--;
           }).error(function (data, status, headers, config) {
@@ -51,6 +75,11 @@ angular.
    			            alert( "failure: " + data);
                   
               }); 
+              
+              
+      
+
+
       }
     ]
   });

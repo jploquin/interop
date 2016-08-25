@@ -1,9 +1,9 @@
-   <div>
+   <div id="TestCategory" role="navigation">
       <!--Body content-->
 
       <ul class="themes">
         <li 	ng-repeat="theme in $ctrl.themes | filter:$ctrl.query | orderBy:$ctrl.orderProp" 
-		class="listTheme">
+		class="listTheme" role="menuitem">
           <a href="#!/themes/{{theme.test_category_id}}">{{theme.name}}</a>
         </li>
       </ul>
