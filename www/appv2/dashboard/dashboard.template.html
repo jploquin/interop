@@ -67,7 +67,7 @@
           <ul class="">
         <li     ng-repeat="mostcas in $root.LastTestCaseList"
                 class="">
-	    	<a href="#!/case/{{mostcas.test_header_case_id}}">{{mostcas.categoryname}}/{{mostcas.name}} created on {{mostcas.datecre}}</a> 
+	    	<a href="#!/case/{{mostcas.test_header_case_id}}">{{mostcas.categoryname}}/{{mostcas.name}} --> created on {{mostcas.datecre.substring(0,10)}}</a> 
           <p> {{mostcas.id}}</p>
         </li>
       </ul>

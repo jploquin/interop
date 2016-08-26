@@ -1,18 +1,19 @@
 <div role="banner">
-<table>
+<table style='width:100%'>
 <tr>
 <td>
     <div class="title"><a href='#!/dashboard' style="text-decoration: none;color:inherit">Email systems interoperability testing</a>
   
     </div>
   </td>
+  <td rowspan=2><img alt='Beta version' src="../img/beta.png" height='80px'></td>
   </tr>
   <tr>
-  <td style='text-align:'right'>
-    <div style='text-align:right;margin-right:20px' ng-show="$root.connected">{{$root.myLogin.username}}
+  <td colspan=2 style='text-align:left;'>
+    <div style='text-align:left;margin-right:20px; margin-left:30px' ng-show="$root.connected">{{$root.myLogin.username}}
 <a style=""  ng-click = "disconnect()" class="" href="">disconnect</a>
 </div>
-<div style='text-align:right;margin-right:20px' ng-hide="$root.connected">
+<div style='text-align:left;margin-right:20px; margin-left:30px' ng-hide="$root.connected">
 <a style=""  ng-click = "connect()" class="" href="">connect with my 'forum etalab' account</a>
 </div>
 </td>

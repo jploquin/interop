@@ -46,11 +46,12 @@ angular.
                 $rootScope.globalLoading++;
                 $http.get('/node/listLastCases').
                   success(function(data) {
-                $rootScope.LastTestCaseList=data;//self.cas = data;
-                $rootScope.globalLoading--;
+                    $rootScope.LastTestCaseList=data;//self.cas = data;
+                    
+                    $rootScope.globalLoading--;
       
 //	    $scope.loading--;
-                }).error(function (data, status, headers, config) {
+                  }).error(function (data, status, headers, config) {
                     $rootScope.globalLoading--;
                 }); 
       
