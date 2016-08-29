@@ -13,7 +13,8 @@
 <input type="radio" name="groupTestType"   ng-model="$ctrl.test_type" value="0"> Horizontal test (between solutions)<br></input>
 <input type="radio" name="groupTestType"  ng-model="$ctrl.test_type" value="1"> Vertical test (between components)<br></input>
 <div ng-show="$ctrl.test_type==1">
-<label style='width:100%;margin-left:40px;font-weight: normal' ng-repeat="combi in $ctrl.authorizedVerticalTests">
+<p style='margin-left:40px;margin-top:10px'>Chose wich type of components you want to test the interoperability:</p>
+<label style='width:100%;margin-left:60px;font-weight: normal' ng-repeat="combi in $ctrl.authorizedVerticalTests">
 <input style='' name="groupCombi" type="radio" ng-model="$ctrl.from_to_choice" ng-value="combi.from_value+':'+combi.to_value">from <span style='text-decoration: underline'>{{combi.from_label}}</span> components 
 to <span style='text-decoration: underline'>{{combi.to_label}}</span> components</input>
 </label>
