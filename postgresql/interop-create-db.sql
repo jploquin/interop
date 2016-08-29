@@ -2,6 +2,7 @@
 /* drop view if exists test_header_case_result;
 drop view if exists stats;
 */
+drop table if exists param;
 drop table if exists product cascade; 
 drop table if exists provider cascade; 
 drop table if exists test_category cascade; 
@@ -9,12 +10,62 @@ drop table if exists test_header_case cascade;
 drop table if exists test_case cascade; 
 drop table if exists test_result cascade; 
 drop table if exists test_user cascade; 
+drop table if exists authorized_vertical_test;
+
+
+create table param
+(
+	param_id serial  primary key,
+	reference char(32),
+	value integer,
+	name char(32),
+	etat smallint default 3,
+	cre_test_user_id integer,
+	maj_test_user_id integer,
+	usercre char(32),
+	usermaj char(32),
+	datecre Date default current_timestamp,
+	datemaj Date);
+
+insert into param (reference, value, name) values ('component_type',0,'Backend');
+insert into param (reference, value, name) values ('component_type',1,'Desktop app');
+insert into param (reference, value, name) values ('component_type',2,'Webmail');
+insert into param (reference, value, name) values ('component_type',3,'Mobile app');
+insert into param (reference, value, name) values ('component_type',4,'Accessibility app');
+
+create table authorized_vertical_test 
+(
+	authorized_vertical_test_id serial  primary key,
+	from_value smallint,
+	to_value smallint,
+	etat smallint default 3,
+	cre_test_user_id integer,
+	maj_test_user_id integer,
+	usercre char(32),
+	usermaj char(32),
+	datecre Date default current_timestamp,
+	datemaj Date);
+
+insert into authorized_vertical_test (from_value, to_value) values (4,3);
+insert into authorized_vertical_test (from_value, to_value) values (4,2);
+insert into authorized_vertical_test (from_value, to_value) values (4,1);
+insert into authorized_vertical_test (from_value, to_value) values (3,0);
+insert into authorized_vertical_test (from_value, to_value) values (2,0);
+insert into authorized_vertical_test (from_value, to_value) values (1,0);
+
+
+
+
+
+
 
 create table product 
 (
 	product_id serial  primary key,
 	provider_id integer,
 	name char(32),
+	product_type smallint default 0,/* 0=Poduct, 1=Component */
+	component_type smallint default 0, 
 	description varchar(512),
 	product_access varchar(1024),
 	product_access_url varchar(256),
@@ -59,7 +110,10 @@ create table test_header_case
 	test_header_case_id serial  primary key,
 	test_category_id integer,
 	name char(32),
-  single_product_test smallint,
+  single_product_test smallint, /* obsolete */
+	test_type smallint default 0, /* 0=horizontal, 1= vertical */
+	vertical_from_test_type smallint default 4, 
+	vertical_to_test_type smallint default 1,
 	etat smallint default 3,
 	cre_test_user_id integer,
 	maj_test_user_id integer,
@@ -121,9 +175,10 @@ create or replace view test_header_case_result (test_result_id,test_header_case_
 as select max(test_result_id),product_1_id,product_2_id from test_result where etat <>99 group by product_1_id, product_2_id;
 */
 
-create or replace view stats (nb_products,nb_categories,nb_tests,nb_execute,nb_execute_failed,nb_execute_succeeded)
+create or replace view stats (nb_products,nb_components,nb_categories,nb_tests,nb_execute,nb_execute_failed,nb_execute_succeeded)
 as select
-(select count(*) from product where etat <>99),
+(select count(*) from product where product_type=0 and etat <>99),
+(select count(*) from product where product_type=1 and etat <>99),
 (select count(*) from test_category where etat<>99),
 (select count(*) from test_header_case where etat<>99),
 (select count(*) from test_result where etat<>99),
@@ -135,6 +190,7 @@ insert into provider(name) values ('Alinto');
 create table static_stats (
         statics_stat_id serial  primary key,
 	nb_products integer,
+	nb_components integer,
 	nb_categories integer,
 	nb_tests integer,
 	nb_execute integer,

@@ -30,6 +30,7 @@ app.set('jwtTokenSecret','melissa');
 var connectionString = process.env.DATABASE_URL;
 //var myServer="54.149.55.192";
 //var path="/interop/appv1/#!/login";
+var port=process.env.PORT;
 var login=process.env.LOGINURL;
 var rand='12345';
 var secret='nuitdebout';
@@ -93,7 +94,7 @@ app.get('//HeaderCase', function (req, res) {
 
         // SQL Query > Select Data
         var query = client.query(
-		"SELECT * FROM test_header_case where test_header_case_id="+id+
+		"SELECT *,(select name from param where etat<>99 and reference='component_type' and value=th.vertical_from_test_type) from_test_type_label,(select name from param where etat<>99 and reference='component_type' and value=th.vertical_to_test_type) to_test_type_label FROM test_header_case th where th.test_header_case_id="+id+
 			" and etat <> 99;")
  
         // Stream results back one row 
@@ -204,7 +205,7 @@ console.log('Start product');
         }
 
         // SQL Query > Select Data
-        var query = client.query("SELECT p.*, f.name as provider_name FROM product p left outer join provider f on p.provider_id=f.provider_id where product_id="+id+";");
+        var query = client.query("SELECT p.*, f.name as provider_name,(select name from param where etat<>99 and reference='component_type' and value=p.component_type) component_type_label FROM product p left outer join provider f on p.provider_id=f.provider_id where product_id="+id+";");
 
  
         // Stream results back one row at a time
@@ -264,9 +265,11 @@ console.log('Start listcategory');
 //list product 
 app.get('//listProducts', function (req, res) {
  
+    var myType = req.param('product_type');
     var results = [];
     console.log('Start lisProducts'); 
- 
+    console.log('type::'+myType); 
+   if (myType==null) myType=0;
     // Get a Postgres client from the connection pool
     pg.connect(connectionString, function(err, client, done) {
         // Handle connection errors
@@ -278,7 +281,7 @@ app.get('//listProducts', function (req, res) {
 
         // SQL Query > Select Data
         var query = client.query(
-		"SELECT p.*, prov.name as provider FROM product p, provider prov where p.provider_id=prov.provider_id AND p.ETAT<>99 ORDER BY p.name ASC;");
+		"SELECT p.*, prov.name as provider FROM product p left outer join provider prov on  p.provider_id=prov.provider_id where p.ETAT<>99  and p.product_type="+myType+" ORDER BY p.name ASC;");
 	
  
         // Stream results back one row at a time
@@ -296,6 +299,7 @@ app.get('//listProducts', function (req, res) {
     });
 
 });
+
 
 
 
@@ -450,6 +454,42 @@ app.get('//listResults', function (req, res) {
 
 });
 
+//list authorized vertical tests
+app.get('//listAuthorizedVerticalTests', function (req, res) {
+ 
+    var results = [];
+console.log('Start list authorized vertical tests'); 
+ 
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+          done();
+          console.log(err);
+      return res.status(500).send(err);
+        }
+
+        // SQL Query > Select Data
+        var query = client.query("SELECT *, (select name from param where etat<>99 and reference='component_type' and value=a.from_value) from_label,(select name from param where etat<>99 and reference='component_type' and value=a.to_value) to_label FROM authorized_vertical_test a WHERE ETAT <> 99 ORDER BY from_value desc, to_value desc;");
+	
+ 
+        // Stream results back one row at a time
+        query.on('row', function(row) {
+            results.push(row);
+        });
+
+        // After all data is returned, close connection and return results
+        query.on('end', function() {
+ 	    console.log('End list authorized vertical tests'); 
+            done();
+            return res.json(results);
+        });
+
+    });
+
+});
+
+
 //Create APIs
 //-----------
 
@@ -555,9 +595,9 @@ app.post('//saveTestCase', function (req, res) {
 
         // SQL Query > Insert Data header
         client.query("INSERT INTO test_header_case "+
-            " (test_category_id, name, etat, cre_test_user_id, datecre )"+
-            "  values($1, $2, $3, $4, current_timestamp) returning test_header_case_id", 
-              [data.test_category_id, data.name, 3, userId],
+            " (test_category_id, name, test_type, vertical_from_test_type, vertical_to_test_type, etat, cre_test_user_id, datecre )"+
+            "  values($1, $2, $3, $4, $5, $6, $7, current_timestamp) returning test_header_case_id", 
+              [data.test_category_id, data.name, data.test_type, data.vertical_from_test_type, data.vertical_to_test_type, 3, userId],
             function(err, result) {
                 if (err) {
                     console.log(err);
@@ -1347,7 +1387,7 @@ function verifyTokenObject2(myTokenObject,username){
     }
     return ret;
 }
-var server = app.listen(8080, function () {
+var server = app.listen(port, function () {
 
   var host = server.address().address
   var port = server.address().port

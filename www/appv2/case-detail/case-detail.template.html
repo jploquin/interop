@@ -74,9 +74,25 @@
 <div ng-show="$root.currentTestCaseNavItem=='page1'">
 <table>
 <tr>
+<td> Test type:</td>
+<td>
+{{$ctrl.headercase.test_type_label}}
+<br>
+<span ng-if="$ctrl.headercase.test_type==1 && $ctrl.headercase.from_test_type_label!=null && $ctrl.headercase.to_test_type_label!=null ">test from 
+<span style="text-decoration: underline">{{$ctrl.headercase.from_test_type_label}}</span> components to 
+<span style="text-decoration: underline">{{$ctrl.headercase.to_test_type_label}}</span> components</span>
+ </td>
+</tr>
+<tr>
+<td colspan=2><br></td>
+</tr>
+<tr>
 <td>Name:  </td><td><input aria-label="Test case name" style='width:300px' maxlength=32 type="text" name="" ng-model=$ctrl.headercase.name>
 </td>
 </tr>
+<!-- Vertical it -->
+
+
 <tr>
 <td> Description:</td>
 <td>
@@ -123,23 +139,31 @@
 <thead>
 <tr>  
 <th></th>
-<th class="firstRowResult" ng-class="thRotatedClass" ng-repeat="product0 in $ctrl.products" title = "{{product0.name.trim()}}"> 
-<div><span>{{product0.label}}</div></span>
+<th class="firstRowResult" ng-class="thRotatedClass" ng-repeat="product0 in $ctrl.products" title = "{{product0.name.trim()}}"
+ng-if="$ctrl.headercase.test_type==0 || ($ctrl.headercase.test_type==1 && product0.component_type==$ctrl.headercase.vertical_to_test_type)"> 
+<div >
+<span>{{product0.name}}</div></span>
 
 </th>
 </tr>
 </thead>
 <tbody>
 <tr  ng-repeat="product1 in $ctrl.products">
-<td class="firstColResult" style='width:200px'> {{product1.rank}}. {{product1.name}} </td>
+<td class="firstColResult" style='width:200px'
+ng-if="$ctrl.headercase.test_type==0 || ($ctrl.headercase.test_type==1 && product1.component_type==$ctrl.headercase.vertical_from_test_type)"> 
+{{product1.name}} </td>
 <td id="changeResult{{product1.rank}}::{{product2.rank}}" class="tdResult" ng-repeat="product2 in $ctrl.products" 
->
+ng-if="$ctrl.headercase.test_type==0 || ($ctrl.headercase.test_type==1 && product1.component_type==$ctrl.headercase.vertical_from_test_type
+&& product2.component_type==$ctrl.headercase.vertical_to_test_type)
+">
 
 <div id="divChangeResult{{product1.rank}}::{{product2.rank}}" ng-class="getClassResult({{product1.rank}},{{product2.rank}})" 
 ng-click = 'changeResult(product1.rank,product2.rank)'
 title="From {{product1.name.trim()}} to {{product2.name.trim()}}, {{getTextResult(product1.rank,product2.rank)}}"
 role="button"
-aria-label="From {{product1.name.trim()}} to {{product2.name.trim()}}, {{getTextResult(product1.rank,product2.rank)}}">
+aria-label="From {{product1.name.trim()}} to {{product2.name.trim()}}, {{getTextResult(product1.rank,product2.rank)}}"
+ng-if="$ctrl.headercase.test_type==0 || ($ctrl.headercase.test_type==1 && product1.component_type==$ctrl.headercase.vertical_from_test_type
+&& product2.component_type==$ctrl.headercase.vertical_to_test_type)">
 </div>
 
 </td>

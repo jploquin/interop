@@ -18,7 +18,8 @@
 #  ADD serverInterop.conf /etc/init
 #  ADD serverInterop /etc/init.d
 #  CMD serverInterop start
-   CMD env DATABASE_URL="postgres://interop:fanfaron@interop-postgres:5432/interop" LOGINURL="http://interop.etalab.gouv.fr/#!/login" API_KEY="1f983abe5ec7296fc7536500c65468861a9ac12457e7a852d3b51f1e31404899" PORT="8080" API_USERNAME="jploquin-DINSIC" DISCOURSE_GROUP="interop-messagerie" node serverInterop.js
+  CMD echo "This is a test."
+   CMD env DATABASE_URL="postgres://interop:fanfaron@interop-postgres:5432/interop" LOGINURL="http://84.39.48.21/interop/appv2/#!/login" API_KEY="1f983abe5ec7296fc7536500c65468861a9ac12457e7a852d3b51f1e31404899" API_USERNAME="jploquin-DINSIC" DISCOURSE_GROUP="interop-messagerie" node serverInterop.js
 #   CMD env DATABASE_URL="postgres://interop:fanfaron@interop-postgres:5432/interop" forever start serverInterop.js
 #  CMD []
 #  ENTRYPOINT ["/nodejs/bin/npm", "start"]

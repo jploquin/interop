@@ -58,29 +58,29 @@ body {
 }
 
 .icon-save{
-    background-image: url("../img/Save-icon.png");
+    background-image: url("img/Save-icon.png");
 }
 .icon-add {
-    background-image: url("../img/text-plus-icon.png");
+    background-image: url("img/text-plus-icon.png");
 }
 .icon-delete {
-    background-image: url("../img/delete-icon.png");
+    background-image: url("img/delete-icon.png");
 }
 .icon-next {
-    background-image: url("../img/next-icon.png");
+    background-image: url("img/next-icon.png");
 }
 .icon-previous {
-    background-image: url("../img/previous-icon.png");
+    background-image: url("img/previous-icon.png");
 }
 
 .icon-cross {
-    background-image: url("../img/cross.png");
+    background-image: url("img/cross.png");
     background-repeat: no-repeat;
     background-position: center;
 }
 
 .icon-green {
-    background-image: url("../img/circle_green.png");
+    background-image: url("img/circle_green.png");
     background-repeat: no-repeat;
     background-position: center;
 
@@ -88,14 +88,14 @@ body {
 }
 
 .little-icon-green {
-    background-image: url("../img/circle_green.png");
+    background-image: url("img/circle_green.png");
     background-repeat: no-repeat;
     background-position: top;
     background-size: 12px 12px;
     }
     
 .little-icon-red {
-    background-image: url("../img/circle_red.png");
+    background-image: url("img/circle_red.png");
     background-repeat: no-repeat;
     background-position: top;
     background-size: 12px 12px;
@@ -103,20 +103,20 @@ body {
 
 
 .icon-close {
-    background-image: url("../img/close-icon.png");
+    background-image: url("img/close-icon.png");
     background-repeat: no-repeat;
     background-position: top;
 	cursor: pointer;
 }
 .icon-question {
-    background-image: url("../img/dialog_question.png");
+    background-image: url("img/ic_question_mark.png");
     background-repeat: no-repeat;
     background-position: center;
 	cursor: pointer;
 }
 
 .icon-red {
-    background-image: url("../img/circle_red.png");
+    background-image: url("img/circle_red.png");
     background-repeat: no-repeat;
     background-position: center;
 	cursor: pointer;

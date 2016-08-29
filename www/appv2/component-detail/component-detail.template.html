@@ -1,0 +1,58 @@
+
+<div>
+
+<div layout="column" layout-fill>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <span>COMPONENT: {{$ctrl.component.name}} </span>
+      <!-- fill up the space between left and right area -->
+      <span flex></span>
+    </div>
+  </md-toolbar>  
+</div>
+<br>
+<!-- p class="subtitle"> Solution<hr> </p-->
+<table>
+<tr>
+<td>Component type:  </td><td>{{$ctrl.component.component_type_label}}
+</td>
+</tr>
+<tr>
+<td colspan=2><br></td>
+</tr>
+<tr>
+<td>Name:  </td><td><input aria-label="Solution name" type="text" size=53 maxlength=32  name="country" ng-model=$ctrl.component.name  readonly>
+</td>
+</tr>
+<tr>
+<td> Description:</td>
+<td>
+<textarea aria-label="Solution description" rows="4" cols="80" maxlength=512 ng-model=$ctrl.component.description>
+</textarea>
+ </td>
+</tr>
+<tr>
+<td>Provider:  </td><td><input aria-label="Solution provider name" size=53  type="text" name="country" value={{$ctrl.component.provider_name}} readonly>
+</td>
+</tr>
+<!--tr>
+<td>Access url:  </td><td><span ng-show=$root.connected><input aria-label="Solution access url"   size=64 type="text" maxlength=256 name="country" ng-model=$ctrl.component.product_access_url>
+<a target="_blank" href={{$ctrl.component.product_access_url}}> go! </a></span>
+<span ng-hide=$root.connected style='color:red'>You must be connected to access this information</span>
+</td>
+</tr-->
+<tr>
+<td> Access instruction:</td>
+<td>
+<span ng-show=$root.connected>
+<textarea aria-label="Solution access instruction" rows="4" cols="80" maxlength=1024 ng-model=$ctrl.component.product_access>
+</textarea>
+</span>
+<span ng-hide=$root.connected style='color:red'>You must be connected to access this information</span>
+
+ </td>
+</tr>
+</table>
+<a style="" ng-click = "updateComponent()" class="icon icon-save" href="">Save</a>
+
+</div>

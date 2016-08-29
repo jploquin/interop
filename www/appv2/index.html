@@ -31,10 +31,14 @@
     <script src="app.config.js"></script>
     <script src="product-list/product-list.module.js"></script>
     <script src="product-list/product-list.component.js"></script>
+    <script src="component-list/component-list.module.js"></script>
+    <script src="component-list/component-list.component.js"></script>
     <script src="theme-list/theme-list.module.js"></script>
     <script src="theme-list/theme-list.component.js"></script>
     <script src="theme-detail/theme-detail.module.js"></script>
     <script src="theme-detail/theme-detail.component.js"></script>
+    <script src="component-detail/component-detail.module.js"></script>
+    <script src="component-detail/component-detail.component.js"></script>
     <script src="product-detail/product-detail.module.js"></script>
     <script src="product-detail/product-detail.component.js"></script>
     <script src="case-detail/case-detail.module.js"></script>
@@ -55,25 +59,28 @@
   <body>
 
 <div style="z-index:99;position:absolute;width:100%;height:100%" id="mydivGlobal"  ng-show="globalLoading" >
-    <img src="/interop/img/loading.gif" class="ajax-loader"/>
+    <img src="img/loading.gif" class="ajax-loader"/>
 </div>
 
     <headsite></headsite>
     <div id="popupContainer" class="container-fluid">
       <div class="row">
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="">
-	<p class="subtitle"> Test categories </p>
-	<theme-list></theme-list>
-	<hr>
-	<p class="subtitle"> Solutions 
-  <br> <small><small>(in <span style='color:red'>red</span>, solutions with no access instructions)</small></small></p>
-	<product-list></product-list>
-	</div>
-     <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" style="border-left:1px solid grey">
-
-    <div ng-view></div>
-   </div>
-    </div>	
+        	<p class="subtitle"> Test categories </p>
+        	<theme-list></theme-list>
+        	<hr>
+        	<p class="subtitle"> Solutions <small><small>(horizontal interoperability)</small></small>
+          <br> <small><small>(in <span style='color:red'>red</span>, solutions with no access instructions)</small></small></p>
+        	<product-list></product-list>
+         <hr>
+        	<p class="subtitle"> Components <small><small>(vertical interoperability)</small></small>
+          </p>
+        	<component-list></component-list>
+	      </div>
+       <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" style="border-left:1px solid grey">
+          <div ng-view></div>
+       </div>
+      </div>	
     </div>
     
   </body>

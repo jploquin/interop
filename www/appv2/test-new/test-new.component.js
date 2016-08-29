@@ -10,13 +10,33 @@ angular.
         this.name="";
         this.description="";
         this.expected_result="";
+        this.authorizedVerticalTests=null;
         this.categoryId = $routeParams.categoryId;
+        this.test_type=0;
+        this.from_to_choice="4:1";//bad, specif to email it app
         var self=this;
         	//get category name
+      $rootScope.globalLoading++;
   	  $http.get('/node/Category?categoryId='+this.categoryId+'&token='+
 			  $window.localStorage['jwt']).
             success(function(data) {
             self.category = data;
+            $rootScope.globalLoading--;
+            
+            $rootScope.globalLoading++;
+            $http.get('/node/listAuthorizedVerticalTests?token='+
+                              $window.localStorage['jwt']).
+                  success(function(data) {
+                 // self.components = data;
+                  self.authorizedVerticalTests = data;
+                  $rootScope.globalLoading--;
+                })
+                .error(function (data, status, headers, config) {
+                  $rootScope.globalLoading--;
+                });
+                  
+            
+            
           });
 
 
@@ -27,12 +47,15 @@ angular.
      }
        else{
           var myObj = JSON.parse(sessionStorage.getItem('myLogin'));    
-   
+          var fromto = self.from_to_choice.split(':');
        	var dataObj = {
           test_category_id: self.categoryId,
           name: self.name,
   				description : self.description,
           expected_result: self.expected_result,
+          test_type: self.test_type,
+          vertical_from_test_type: fromto[0],
+          vertical_to_test_type: fromto[1],
           username: myObj.username,
           token: myObj.token
   

@@ -197,7 +197,53 @@ angular.
             success(function(data) {
             self.headercase = data;
             if (self.headercase.name !=null) self.headercase.name=self.headercase.name.trim();
+            if (self.headercase.test_type !=null){
+               switch (self.headercase.test_type){
+                 case 0:
+                   self.headercase.test_type_label='Horizontal test (between solutions)';
+                   break;
+                 case 1:
+                   self.headercase.test_type_label='Vertical test (between components)';
+                   break;
+                 default:
+                   self.headercase.test_type_label='Horizontal test (between solutions)';
+                   break;
+                   
+               }
+            }
             $rootScope.globalLoading--;
+            
+             $rootScope.globalLoading++;
+          	//get product list to construct the matrix of results: 
+           //Depending of test type it could be products or components
+            	$http.get('/node/listProducts?product_type='+self.headercase.test_type+'&token='+
+          			$window.localStorage['jwt']).
+                      success(function(data) {
+                      self.products = data;
+          	    var i=0;
+          	    for ( i=0;i<self.products.length;i++){
+              		self.products[i].rank = i+1;
+              		self.products[i].label = self.products[i].rank;
+                 
+                  if (transformationSupported()){
+                   self.products[i].label += ".  ";
+                   self.products[i].label += self.products[i].name;
+                  }
+                }
+                   
+          	//get result list to construct the matrix of results: 
+            	$http.get('/node/listResults?caseId='+self.caseId+'&token='+
+          			$window.localStorage['jwt']).
+                      success(function(data) {
+                      self.results = data;
+          	          var i=0;
+                      calculateViewResults(self.products, self.results, self.matrixResults);
+                      $rootScope.globalLoading--;
+             });
+                     
+            
+            
+                                                                        
 	    //$scope.loading --;
           }).error(function (data, status, headers, config) {
                   $rootScope.globalLoading--;
@@ -208,7 +254,7 @@ angular.
  //       $scope.loading++;
   $rootScope.globalLoading++;
 	//get case details
-  	$http.get('/node/Case?caseId='+this.caseId+'&token='+
+  	$http.get('/node/Case?caseId='+self.caseId+'&token='+
 			$window.localStorage['jwt']).
             success(function(data) {
             self.case = data;
@@ -218,41 +264,14 @@ angular.
 	   // $scope.loading --;
           });
 
-//        $scope.loading++;
-  $rootScope.globalLoading++;
-	//get product list to construct the matrix of results: 
-  	$http.get('/node/listProducts?token='+
-			$window.localStorage['jwt']).
-            success(function(data) {
-            self.products = data;
-	    var i=0;
-	    for ( i=0;i<self.products.length;i++){
-    		self.products[i].rank = i+1;
-    		self.products[i].label = self.products[i].rank;
-       
-        if (transformationSupported()){
-         self.products[i].label += ".  ";
-         self.products[i].label += self.products[i].name;
-        }
-      }
-	  //  $scope.loading --;
-         
-	//get result list to construct the matrix of results: 
-  	$http.get('/node/listResults?caseId='+self.caseId+'&token='+
-			$window.localStorage['jwt']).
-            success(function(data) {
-            self.results = data;
-	          var i=0;
-            calculateViewResults(self.products, self.results, self.matrixResults);
-            $rootScope.globalLoading--;
-   });
+
 
          
           });
 
 	//cell clicked
 	$scope.changeResult = function($rank1,$rank2) {
-//	  if ($rank1 != $rank2){
+	  if ($rank1 != $rank2){
   		var myName = 'changeResult'+$rank1+'::'+$rank2;
   		var target = document.getElementById(myName);
   		var box = target.getBoundingClientRect();
@@ -289,7 +308,7 @@ angular.
 
 //      document.getElementById("writeResultOk").focus();        
 
-//	  }
+	  }
   	};
 	//cell clicked
 	$scope.testKeyUp = function(event) {
@@ -521,7 +540,7 @@ angular.
  
 	$scope.getClassResult = function ($rank1,$rank2) {
 	  var ret="cellResult icon-cross";
-	 // if ($rank1 != $rank2){
+	  if ($rank1 != $rank2){
 	   switch (	self.matrixResults[$rank1-1][$rank2-1]){
 		case -1: 
 		  ret = "cellResult icon-question";
@@ -533,7 +552,7 @@ angular.
 		  ret = "cellResult icon-green";
 		  break;
 	   }
-	 // }
+	  }
 	  return ret;
 	};
 	$scope.getTextResult = function ($rank1,$rank2) {

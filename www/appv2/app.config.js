@@ -100,6 +100,9 @@ angular.
         when('/products/:productId', {
           template: '<product-detail></product-detail>'
         }).
+        when('/components/:componentId', {
+          template: '<component-detail></component-detail>'
+        }).
         when('/case/:caseId', {
           template: '<case-detail></case-detail>'
         }).
