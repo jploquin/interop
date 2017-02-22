@@ -14,6 +14,39 @@ angular.
             success(function(data) {
            // self.components = data;
             $rootScope.components = data;
+            //group by component presentation
+            self.componentType=new Array();
+            var componentObject=new Array();
+            var j=0;
+            
+            data.sort(function (a, b) {
+              if (a.component_type<b.component_type)
+                 return -1;
+              if (a.component_type>b.component_type)
+                 return 1;
+              // a doit être égal à b
+              return 0;            
+            });
+            if (data.length>0){
+              var labelCour=data[0].component_type_label;;
+              componentObject.push(data[0]);
+              for (j=1;j<data.length;j++){
+                if (data[j].component_type_label!=labelCour){
+                  if (componentObject.length>0){
+                    self.componentType.push({labelCour:labelCour,componentObject:componentObject});
+                    componentObject= new Array();
+                    componentObject.push(data[j]);
+                  }
+                  labelCour=data[j].component_type_label;
+                }
+                else{
+                  componentObject.push(data[j]);
+                  if (j==data.length-1){
+                    self.componentType.push({labelCour:labelCour,componentObject:componentObject});
+                  }
+                }
+              }
+            }
             $rootScope.globalLoading--;
           })
           .error(function (data, status, headers, config) {

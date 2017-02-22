@@ -6,96 +6,111 @@
 <div layout="column" layout-fill>
   <md-toolbar>
     <div class="md-toolbar-tools">
-      <span>Testing the email systems interoperability</span>
+      <span>Tableau de bord</span>
       <!-- fill up the space between left and right area -->
       <span flex></span>
     </div>
   </md-toolbar>  
 </div>
+
+
+<div layout="column" layout-gt-sm="row" layout-fill>
+
+  <div flex-gt-sm="33" flex="">
+
+    <md-toolbar layout="row" class="md-hue-3">
+      <div class="md-toolbar-tools">
+        <span>Barometre général</span>
+      </div>
+    </md-toolbar>
+    <img src="img/weather/w{{$ctrl.tranche_ok_total}}.png" style='width:256px;height:256px' title='{{$ctrl.signification_tranche_total}}' alt='{{$ctrl.signification_tranche_total}}'>
+  </div>
+  <md-divider></md-divider>
+      <div flex-gt-sm="33" flex="">
+
+    <md-toolbar layout="row" class="md-hue-3">
+      <div class="md-toolbar-tools">
+        <span>Top éditeurs contributeurs</span>
+      </div>
+    </md-toolbar>
+        <div>
+          <ul class="">
+            <li     ng-repeat="bestProv in $ctrl.bestProviderList"
+                class="">
+	    	      <p style='font-size:{{22-$index}}px'>{{bestProv.name}} {{max(bestProv.commitment)}}</p> 
+            </li>
+          </ul>
+      </div>
+  </div>
+    <md-divider></md-divider>
+      <div flex-gt-sm="33" flex="">
+
+    <md-toolbar layout="row" class="md-hue-3">
+      <div class="md-toolbar-tools">
+        <span>Meilleures associations</span>
+      </div>
+    </md-toolbar>
+        <div>
+          <ul class="">
+            <li     ng-repeat="bestAss in $ctrl.bestAssociations"
+                class="">
+	    	      <p style=''>{{bestAss.name1}}<-> {{bestAss.name2}}</p> 
+            </li>
+          </ul>
+          <!--table style='width:100%'>
+          <tr ng-repeat="bestAss in $ctrl.bestAssociations">
+          <td style="height:30px;background-image: url('img/bleu.png'); background-position:0px 0px; background-repeat: no-repeat;">{{bestAss.name1}}<-> {{bestAss.name2}}</td>
+          </tr>
+          </table-->
+      </div>
+
+  </div>
+</div>  
+<div layout="column" layout-fill>
+  <md-toolbar layout="row" class="md-hue-3">
+    <div class="md-toolbar-tools">
+      <span>Barometre détaillé</span>
+      <!-- fill up the space between left and right area -->
+      <span flex></span>
+    </div>
+  </md-toolbar>  
+</div>
+
 <br>
 
 <!-- p class="subtitle"> Testing the email systems interoperability <hr> </p-->
-<p> A platform to: </p>
-<ul>
-<li> Create and organize test cases</li>
-<li> Write and monitor the results of test cases between solutions </li>
-</ul>
-<hr>
+
+<!-- table>
+  <tr>
+    <td><img src="img/weather/w1.png" style='width:90px;height:90px'></td><td></td></tr>
+    <tr><td></td><td><img src="img/categories/blue-calendar-icon.png" ></td></tr>
+    <tr><td></td><td style='font-size:22px'>Agenda</td>
+  </tr>
+</table -->
 <div class="container-fluid">
 <div class="row">
-<div class="col-md-2" style="width:50%;border-right:1px solid grey">
-
-<p class="subtitle"> Current statistics:  </p>
-<table>
-<tr><td>Number of solutions: </td><td class='cellRight'>{{$ctrl.stats.nb_products}}</td><td></td></tr>
-<tr><td>Number of test categories:</td><td class='cellRight'>{{$ctrl.stats.nb_categories}}</td><td></td></tr>
-<tr><td>Number of tests cases:</td><td class='cellRight'>{{$ctrl.stats.nb_tests}}</td><td></td></tr>
-<!--tr><td>Number of combination: </td><td class='cellRight'>{{$ctrl.stats.nb_combination}}</td><td></td></tr-->
-<tr><td colspan=3><hr></td></tr>
-<tr><td>Number of tests executed: </td><td class='cellRight'>{{$ctrl.stats.nb_execute}}</td>
-<td class='cellRight'>
-<table class='pct_table'>
-<tr><td ng-style="execute.left"></td><td  ></td></tr></table>
-</td>
-</tr>
-<!--tr><td>Percentage of tests passed: </td><td class='cellRight'>{{$ctrl.stats.pct_execute_succeeded}} %
-</td>
-<td class='cellRight'>
-<table class='pct_table'>
-<tr><td ng-style="succeeded.left"></td><td  ></td></tr></table>
-</td></tr-->
-</table>
-  </div>
-  
-<div class="col-md-10" style="width:50%;">
-<div>
-<p class="subtitle">Test cases with most completed results:</p>
- 
-      
-          <ul class="">
-        <li     ng-repeat="mostcas in $root.MostCompletedTestCaseList"
-                class="">
-	    	<a href="#!/case/{{mostcas.test_header_case_id}}">{{mostcas.categoryname}}/{{mostcas.name}}</a> 
-          <p> {{mostcas.id}}</p>
-        </li>
-      </ul>
-</div>
-<div>
-<p class="subtitle">Last test cases created:</p>
- 
-      
-          <ul class="">
-        <li     ng-repeat="mostcas in $root.LastTestCaseList"
-                class="">
-	    	<a href="#!/case/{{mostcas.test_header_case_id}}">{{mostcas.categoryname}}/{{mostcas.name}} --> created on {{mostcas.datecre.substring(0,10)}}</a> 
-          <p> {{mostcas.id}}</p>
-        </li>
-      </ul>
-</div>
-  </div>
-      
-  <!--div class="col-md-10" style="width:50%;">
-  <p class="subtitle">Next events:</p>
-  <ul>
-  <li> 
+<div class="col-md-3" style="width:100%">
+  <div class="row">
+      <div ng-repeat="cat in $ctrl.categories" class="col-md-3" style="width:30%;">
+      <a href="#!/themes/{{cat.test_category_id}}">
+      <div class="padded" md-whiteframe="{{height}}" ng-init="height = 3" ng-mouseenter="height = 6" ng-mouseleave="height = 3">
       <table>
-      <tr><td style='border-bottom:solid 1px grey'>
-      September 2016: "Test case" event
-      </td>
-      <tr>
+      <tr><td valign=top style="width:255px;height:210px;background-image: url('img/categories/{{cat.icon_name}}');
+      background-repeat:no-repeat;background-position: center bottom; background-size:180px 180px">
       
-      <td>subject: to be defined</td></tr>
-      <tr>
-      <td>hosted by: to be defined</td>
-      </tr>
+      <img src='img/weather/w{{cat.tranche_ok}}.png' style='margin-top:5px;margin-left:5px;width:90px;height:90px'>
+      </td></tr>
+      <tr><td style='text-align:center;font-size:22px'>{{cat.name}}</td></tr>
       </table>
-  </li>
-  </ul>
-      
-  </div-->
-  
+      </div>
+      </a>
+      </div>
   </div>
-  </div>
+
+</div>
+</div>
+
+
 
 
 </div>

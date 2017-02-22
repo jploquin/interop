@@ -165,7 +165,7 @@ console.log('Start category');
         }
 
         // SQL Query > Select Data
-        var query = client.query("SELECT * FROM test_category where test_category_id="+id+";");
+        var query = client.query("SELECT *,(select count(*) from test_result r, test_header_case_result c, test_header_case hc where r.test_result_id=c.test_result_id and c.test_header_case_id=hc.test_header_case_id and hc.test_category_id=tc.test_category_id and r.etat<>99 and r.result=1) nb_ok,(select count(*) from test_result r, test_header_case_result c, test_header_case hc where r.test_result_id=c.test_result_id and c.test_header_case_id=hc.test_header_case_id and hc.test_category_id=tc.test_category_id and r.etat<>99 and r.result=0) nb_ko FROM test_category tc where test_category_id="+id+";");
 
  
         // Stream results back one row at a time
@@ -241,7 +241,7 @@ console.log('Start listcategory');
         }
 
         // SQL Query > Select Data
-        var query = client.query("SELECT * FROM test_category WHERE ETAT <> 99 ORDER BY name ASC;");
+        var query = client.query("SELECT *,(select count(*) from test_result r, test_header_case_result c, test_header_case hc where r.test_result_id=c.test_result_id and c.test_header_case_id=hc.test_header_case_id and hc.test_category_id=tc.test_category_id and r.etat<>99 and r.result=1) nb_ok, (select count(*) from test_result r, test_header_case_result c, test_header_case hc where r.test_result_id=c.test_result_id and c.test_header_case_id=hc.test_header_case_id and hc.test_category_id=tc.test_category_id and r.etat<>99 and r.result=0) nb_ko FROM test_category tc WHERE ETAT <> 99 ORDER BY name ASC;");
 	
  
         // Stream results back one row at a time
@@ -281,7 +281,7 @@ app.get('//listProducts', function (req, res) {
 
         // SQL Query > Select Data
         var query = client.query(
-		"SELECT p.*, prov.name as provider FROM product p left outer join provider prov on  p.provider_id=prov.provider_id where p.ETAT<>99  and p.product_type="+myType+" ORDER BY p.name ASC;");
+		"SELECT p.*, prov.name as provider,(select name from param where etat<>99 and reference='component_type' and value=p.component_type) as component_type_label FROM product p left outer join provider prov on  p.provider_id=prov.provider_id where p.ETAT<>99  and p.product_type="+myType+" ORDER BY p.name ASC;");
 	
  
         // Stream results back one row at a time
@@ -302,6 +302,44 @@ app.get('//listProducts', function (req, res) {
 
 
 
+//list product 
+app.get('//listProductsOutFromTestCase', function (req, res) {
+ 
+    var test_header_case_id = req.param('test_header_case_id');
+    var results = [];
+    console.log('Start listProductsOutFromTestCase'); 
+    console.log('test_header_case_id::'+test_header_case_id); 
+   if (test_header_case_id==null) return res.status(500).send("no test header case id");
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+          done();
+          console.log(err);
+      return res.status(500).send(err);
+        }
+
+        // SQL Query > Select Data
+        var query = client.query(
+		"SELECT product_id from product_out_from_test_case where test_header_case_id = "+test_header_case_id+" and etat<>99 order by product_id");
+	
+ 
+        // Stream results back one row at a time
+        query.on('row', function(row) {
+            results.push(row);
+        });
+
+        // After all data is returned, close connection and return results
+        query.on('end', function() {
+            console.log('End listProductsOutFromTestCase'); 
+            done();
+            return res.json(results);
+        });
+
+    });
+
+});
+
 
 //list cases of a category
 app.get('//listCases', function (req, res) {
@@ -321,7 +359,7 @@ app.get('//listCases', function (req, res) {
         }
 
         // SQL Query > Select Data
-        var query = client.query("SELECT * FROM test_header_case where test_category_id = "+id+" AND ETAT <> 99 ORDER BY name ASC;");
+        var query = client.query("SELECT * ,(select count(*) from test_result r, test_header_case_result c where r.test_result_id=c.test_result_id and c.test_header_case_id=hc.test_header_case_id and r.etat<>99 and r.result=1) nb_ok,(select count(*) from test_result r, test_header_case_result c where r.test_result_id=c.test_result_id and c.test_header_case_id=hc.test_header_case_id and r.etat<>99 and r.result=0) nb_ko FROM test_header_case hc where test_category_id = "+id+" AND ETAT <> 99 ORDER BY name ASC;");
 
  
         // Stream results back one row at a time
@@ -406,6 +444,80 @@ app.get('//listLastCases', function (req, res) {
         // After all data is returned, close connection and return results
         query.on('end', function() {
            console.log('End listLastCases'); 
+           done();
+            return res.json(results);
+        });
+
+    });
+
+});
+
+//list best providers
+app.get('//listBestProviders', function (req, res) {
+ 
+    var results = [];
+//    var id = req.param('categoryId');
+    console.log('Start listBestProviders'); 
+ 
+	
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+          done();
+          console.log(err);
+      return res.status(500).send(err);
+        }
+
+        // SQL Query > Select Data
+        var query = client.query("SELECT  p.*, (select sum(quantity*unit) from commitment where provider_id=p.provider_id and etat<>99) commitment from provider p where p.etat<>99 and (select sum(quantity*unit) from commitment where provider_id=p.provider_id and etat<>99)>0 order by commitment desc;");// limit 5;");
+
+ 
+        // Stream results back one row at a time
+        query.on('row', function(row) {
+            results.push(row);
+        });
+
+        // After all data is returned, close connection and return results
+        query.on('end', function() {
+           console.log('End listBestProviders'); 
+           done();
+            return res.json(results);
+        });
+
+    });
+
+});
+
+//list best associations
+app.get('//listBestAssociations', function (req, res) {
+ 
+    var results = [];
+//    var id = req.param('categoryId');
+    console.log('Start listBestAssociations'); 
+ 
+	
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+          done();
+          console.log(err);
+      return res.status(500).send(err);
+        }
+
+        // SQL Query > Select Data
+        var query = client.query("select p1.name name1, p2.name name2,(select count(*) from test_result r, test_header_case_result c where r.test_result_id=c.test_result_id and c.product_1_id in (p1.product_id,p2.product_id) and c.product_2_id in (p1.product_id,p2.product_id) and r.etat<>99 and r.result=1) score_ok,(select count(*) from test_result r, test_header_case_result c where r.test_result_id=c.test_result_id and c.product_1_id in (p1.product_id,p2.product_id) and c.product_2_id in (p1.product_id,p2.product_id) and r.etat<>99 and r.result=0) score_ko from product p1, product p2 where p1.product_id<p2.product_id and p1.product_type=0 and p2.product_type=0 order by score_ok desc limit 5;");
+
+ 
+        // Stream results back one row at a time
+        query.on('row', function(row) {
+            results.push(row);
+        });
+
+        // After all data is returned, close connection and return results
+        query.on('end', function() {
+           console.log('End listBestAssociations'); 
            done();
             return res.json(results);
         });
@@ -918,6 +1030,7 @@ app.put('//deleteResult', function(req, res) {
 
 });
 
+
 //delete test case
 app.put('//deleteTestCase', function(req, res) {
     console.log ('Start deleteTestCase');
@@ -988,6 +1101,161 @@ app.put('//deleteTestCase', function(req, res) {
      });
 });
 
+app.put('//setProductOutFromTestCase', function(req, res) {
+    console.log ('Start setProductOutFromTestCase');
+  //  var id = req.param('testCaseId');
+    var results = [];
+
+    var userId=0;
+    
+//  Preliminary verification
+//  ------------------------
+
+    var myTokenObject = getObjectFromToken(req.body.token);
+    if (myTokenObject==null || (!verifyTokenObject(myTokenObject,req))){
+      err = "Action not permitted";
+      return res.status(500).send(err);      
+    }
+    else
+      userId = myTokenObject.userId;    
+
+
+
+    // Grab data from http request
+    var data = req.body;
+    var test_id = data.test_header_case_id;
+    var product_id = data.product_id;
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+          done();
+          console.log(err);
+          return res.status(500).send(err);
+        }
+        
+        
+        
+        // SQL Query > Select Data
+        var query = client.query(
+      		"select product_out_from_test_case_id FROM product_out_from_test_case_id WHERE test_header_case_id="+test_id+" and product_id = "+product_id);
+ 
+        // Stream results back one row 
+        query.on('row', function(row) {
+           // SQL Query > Update Data
+            client.query("UPDATE product_out_from_test_case_id SET ETAT=3, usermaj=($1), datemaj=current_timestamp WHERE test_header_case_id=($2) and product_id=($3)", 
+                  [userId,test_id,product_id],
+                function(err, result) {
+                    if (err) {
+                        console.log(err);
+                        done();
+                        return res.status(500).send(err);
+                    } else {
+                        console.log('row updated');
+                        console.log (id+'::'+data.description);
+                        done();
+                        return res.json(results);                   
+                    }
+                  }                   
+            );
+        });
+        //else{
+        
+         client.query("INSERT INTO product_out_from_test_case "+
+            " (test_header_case_id , product_id, etat, usercre, datecre )"+
+            "  values($1, $2, $3, $4, current_timestamp) returning product_out_from_test_case_id", 
+              [test_id, product_id, 3, userId],
+            function(err, result) {
+                if (err) {
+                    console.log(err);
+                    done();
+                          return res.status(500).send("Error while insert");
+                } else {
+                    console.log('row inserted with id: ' + result.rows[0].product_out_from_test_case_id);
+                    console.log ('End saveResult');
+                    done();
+                    return res.json(results);
+                }
+              }                   
+        );
+          
+        //}
+//            return res.json(row);
+ //           results.push(row);
+        });
+
+
+app.put('//setProductInFromTestCase', function(req, res) {
+    console.log ('Start setProductInFromTestCase');
+  //  var id = req.param('testCaseId');
+    var results = [];
+
+    var userId=0;
+    
+//  Preliminary verification
+//  ------------------------
+
+    var myTokenObject = getObjectFromToken(req.body.token);
+    if (myTokenObject==null || (!verifyTokenObject(myTokenObject,req))){
+      err = "Action not permitted";
+      return res.status(500).send(err);      
+    }
+    else
+      userId = myTokenObject.userId;    
+
+
+
+    // Grab data from http request
+    var data = req.body;
+    var test_id = data.test_header_case_id;
+    var product_id = data.product_id;
+    // Get a Postgres client from the connection pool
+    pg.connect(connectionString, function(err, client, done) {
+        // Handle connection errors
+        if(err) {
+          done();
+          console.log(err);
+          return res.status(500).send(err);
+        }
+        
+        
+        
+        // SQL Query > Select Data
+        var query = client.query(
+      		"select product_out_from_test_case_id FROM product_out_from_test_case_id WHERE test_header_case_id="+test_id+" and product_id = "+product_id+" and etat<>99");
+ 
+        // Stream results back one row 
+        query.on('row', function(row) {
+           // SQL Query > Update Data
+            client.query("UPDATE product_out_from_test_case_id SET ETAT=99, usermaj=($1), datemaj=current_timestamp WHERE test_header_case_id=($2) and product_id=($3)", 
+                  [userId,test_id,product_id],
+                function(err, result) {
+                    if (err) {
+                        console.log(err);
+                        done();
+                        return res.status(500).send(err);
+                    } else {
+                        console.log('row updated');
+                        console.log (id+'::'+data.description);
+                        done();
+                        return res.json(results);                   
+                    }
+                  }                   
+            );
+        });
+        
+        });
+
+        
+        
+        
+
+
+
+  
+    });
+
+});
 
 //get url redirection for forum etalab discourse as sso provider
 app.get('//urlRedirect', function (req, res) {

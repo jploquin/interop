@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" ng-app="interopApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Email systems interoperability testing</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">    
+    <link rel="stylesheet" href="app.css" />
+    
+    <!--script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.0/angular-material.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script-->
+
+    <!--script src="modernizr-custom.min.js"></script-->    
+    
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.min.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/angular-material/angular-material.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="bower_components/angular-messages/angular-messages.min.js"></script>
+
+    <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+
+    <script src="utils.js"></script>
+    <script src="app.module.js"></script>
+    <script src="app.config.js"></script>
+    <script src="product-list/product-list.module.js"></script>
+    <script src="product-list/product-list.component.js"></script>
+    <script src="component-list/component-list.module.js"></script>
+    <script src="component-list/component-list.component.js"></script>
+    <script src="theme-list/theme-list.module.js"></script>
+    <script src="theme-list/theme-list.component.js"></script>
+    <script src="theme-detail/theme-detail.module.js"></script>
+    <script src="theme-detail/theme-detail.component.js"></script>
+    <script src="component-detail/component-detail.module.js"></script>
+    <script src="component-detail/component-detail.component.js"></script>
+    <script src="product-detail/product-detail.module.js"></script>
+    <script src="product-detail/product-detail.component.js"></script>
+    <script src="case-detail/case-detail.module.js"></script>
+    <script src="case-detail/case-detail.component.js"></script>
+    <script src="dashboard/dashboard.module.js"></script>
+    <script src="dashboard/dashboard.component.js"></script>
+    <script src="login/login.module.js"></script>
+    <script src="login/login.component.js"></script>
+    <script src="headsite/headsite.module.js"></script>
+    <script src="headsite/headsite.component.js"></script>
+    <script src="theme-new/theme-new.module.js"></script>
+    <script src="theme-new/theme-new.component.js"></script>
+    <script src="test-new/test-new.module.js"></script>
+    <script src="test-new/test-new.component.js"></script>
+    <script src="returnSSO/returnSSO.module.js"></script>
+    <script src="returnSSO/returnSSO.component.js"></script>
+  </head>
+  <body>
+
+<div style="z-index:99;position:absolute;width:100%;height:100%" id="mydivGlobal"  ng-show="globalLoading" >
+    <img src="img/loading.gif" class="ajax-loader"/>
+</div>
+
+    <headsite></headsite>
+    <div id="popupContainer" class="container-fluid">
+      <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="">
+	      </div>
+       <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" style="border-left:1px solid grey">
+          <div>Site is temporarly down. Please retry later</div>
+       </div>
+      </div>	
+    </div>
+    
+  </body>
+</html>

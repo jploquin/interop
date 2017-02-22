@@ -20,6 +20,7 @@ angular.
             success(function(data) {
             self.category = data;
             self.category.name=self.category.name.trim();
+            self.category.tranche_ok=get_tranche(self.category.nb_ok,self.category.nb_ko);
       $rootScope.globalLoading--;
       
 	//get list of test cases
@@ -28,7 +29,12 @@ angular.
   	$http.get('/node/listCases?categoryId='+self.themeId+'&token='+
 			$window.localStorage['jwt']).
             success(function(data) {
-            $rootScope.currentTestCaseList=data;//self.cas = data;
+            var j=0;
+            for (j=0;j<data.length;j++){
+              data[j].tranche_ok=get_tranche(data[j].nb_ok,data[j].nb_ko);
+            }
+            $rootScope.currentTestCaseList=data;//self.cas = data
+              
       $rootScope.globalLoading--;
       
 //	    $scope.loading--;

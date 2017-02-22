@@ -1,0 +1,75 @@
+<?php
+/* Script de gestion des updates du courrielleur MCE.
+*/
+
+	header("Content-type: text/xml");
+	// set 'php_flag short_open_tag off' for this to work
+	echo '<?xml version="1.0"?>';
+	
+	// set this to the URL where the updates can be found, ideally the same web
+	// server as this script
+	$update_host = "http:".getenv("REMOTE_ADDR").":81";//a passer en https
+							//"http://84.39.32.11:81";
+
+	// emplacement des updates.
+	$updates_path = "/var/www/ServeurDepotCLMCE";
+	
+	// Recuperation de la requete
+	$url_params=explode("/",$_SERVER["REQUEST_URI"]);
+	$product=$url_params[3];
+	$version=$url_params[4];
+	$build_id=$url_params[5];
+	$build_target=$url_params[6];
+	//$locale=$url_params[7];
+	//$channel=$url_params[8];
+	//$os_version=$url_params[9];
+	//$dist=$url_params[10];
+	//$dist_version=$url_params[11];
+	//$filename=$url_params[12];
+	
+	// pas d'update si on ne trouve pas un mar qui matche 
+	$update = false;
+	//$update_ver="45.6.0"; 
+	$update_type = "minor";
+
+	// a voir plus tard, le traitement des mar complets
+	$update_patchType = "partial";//"complete";
+	#update_detailsURL = "http://yourwebserver/tb-update10.html";
+	#$update_detailsURL = "https://yourwebserver/tb-update10.html";
+	$update_lang = "fr";
+	
+	
+	if($product=="Thunderbird"){
+	    if(version_compare($version, $update_ver, "=")){
+	        $update = true;
+	        $update_patchType = "partial";
+	        // filename changes with the settings
+	    }
+	
+	    // if there are no more specific rules, upgrade all version to the
+	    // current complete ESR version (default settings defined above)
+	    if(version_compare($version, $update_ver, "<")){
+	        $update = true;
+	    }
+	}
+	
+
+	// set the update filename
+	$update_file = strtolower("$product-$update_ver-$update_patchType-$build_target-$update_lang.mar");
+	//$update_file = "$product-$update_ver-$update_patchType-$update_lang.mar";
+
+	// otherwise print just the empty update element
+	if($update && is_readable("$updates_path/$update_file")){
+	    $update_file_hash = hash_file("sha256", "$updates_path/$update_file");
+	    $update_file_size = filesize("$updates_path/$update_file");
+	    echo "
+	<updates>
+	    <update type='$update_type' version='$update_ver' extensionVersion='$update_ver' >
+	        <patch type='$update_patchType' URL='$update_host/$update_file' hashFunction='SHA256' hashValue='$update_file_hash' size='$update_file_size'/>
+	    </update>
+	</updates>";
+	}
+	else{
+ 	    echo "<updates></updates>";
+ 	}
+?>

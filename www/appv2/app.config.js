@@ -137,6 +137,7 @@ angular.
 //	 $rootScope.token=0;
    $rootScope.globalLoading=0;
    $rootScope.products={};
+   $rootScope.themes={};
    if ($rootScope.currentTestCaseList==null) $rootScope.currentTestCaseList={};
    if ($rootScope.currentTestCaseNavItem==null) $rootScope.currentTestCaseNavItem = 'page1';
 //   

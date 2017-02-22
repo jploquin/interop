@@ -230,7 +230,8 @@ angular.
                    self.products[i].label += self.products[i].name;
                   }
                 }
-                   
+                // self.results=0;  
+                // $rootScope.globalLoading--;
           	//get result list to construct the matrix of results: 
             	$http.get('/node/listResults?caseId='+self.caseId+'&token='+
           			$window.localStorage['jwt']).

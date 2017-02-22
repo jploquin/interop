@@ -54,9 +54,24 @@ insert into authorized_vertical_test (from_value, to_value) values (2,0);
 insert into authorized_vertical_test (from_value, to_value) values (1,0);
 
 
+create table commitment 
+(
+	commitment_id serial primary key,
+	provider_id integer,
+	event_id integer,
+	description char(512),
+	unit integer,
+	quantity integer default 1,	
+	etat smallint default 3,
+        usercre char(32),
+        usermaj char(32),
+        datecre Date default current_timestamp,
+        datemaj Date);
 
-
-
+insert into commitment (description,provider_id,unit,quantity) values ('Atelier initial avril 2016',4,18,2);
+insert into commitment (description,provider_id,unit,quantity) values ('Atelier SGMAP',3,12,2);
+insert into commitment (description,provider_id,unit,quantity) values ('POSS',2,2,2);
+insert into commitment (description,provider_id,unit,quantity) values ('OGP',10,28,2);
 
 
 create table product 
@@ -95,6 +110,7 @@ create table test_category
 (
 	test_category_id serial  primary key,
 	name char(32),
+	icon_name char(32),
 	description varchar(512),
 	etat smallint default 3,
 	cre_test_user_id integer,
@@ -121,6 +137,19 @@ create table test_header_case
 	usermaj char(32),
 	datecre Date default current_timestamp,
 	datemaj Date);
+
+create table product_out_from_test_case 
+(
+	product_out_from_test_case_id serial primary key,
+	product_id integer,
+	test_header_case_id integer,
+        cre_test_user_id integer,
+        maj_test_user_id integer,
+        etat smallint default 3,
+        usercre char(32),
+        usermaj char(32),
+        datecre Date default current_timestamp,
+        datemaj Date);
 
 
 create table  test_case

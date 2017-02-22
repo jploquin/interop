@@ -12,9 +12,10 @@
 <!-- p class="subtitle"> Category<hr> </p-->
 <table>
 <tr>
-<td><label id="labelname" for="categoryName">Name:</label></td><td>
+<td><label id="labelname" for="categoryName">Nom:</label></td><td>
 <input aria-labelledby="myTitle labelname" id="categoryName" type="text" size=32 maxlength=32 name="country" ng-model=$ctrl.category.name readonly>
 </td>
+<td rowspan=2><img src='img/weather/w{{$ctrl.category.tranche_ok}}.png' style='margin-left:50px;width:128px;height:128px'</td>
 </tr>
 <tr>
 <td><label id="labeldesc" for="categoryDesc"> Description:</td>
@@ -24,24 +25,22 @@
  </td>
 </tr>
 </table>
-<a style="" ng-click = "updateCategory()" class="icon icon-save" href="">Save</a>
+<a style="" ng-click = "updateCategory()" class="icon icon-save" href="">Enregistrer</a>
 <hr>
 <table>
 <tr>
-<td style='width:250px;'>List of test cases 
+<td style='width:250px;'>Liste des cas de test 
 </td>
-<td><a style="margin-left:20px" class="icon icon-add" href="#!/testNew/{{$ctrl.category.test_category_id}}">New test case</a>
+<td><a style="margin-left:20px" class="icon icon-add" href="#!/testNew/{{$ctrl.category.test_category_id}}">Nouveau cas de test</a>
 </td>
 </tr>
 </table>
+<table >
+<tr  ng-repeat="cas in $root.currentTestCaseList">
+<td style='border: 1px solid grey'> <a style='margin:10px' href="#!/case/{{cas.test_header_case_id}}">{{cas.name}}</a></td>
+<td style='border: 1px solid grey'><img src='img/weather/w{{cas.tranche_ok}}.png' style='width:20px;height:20px'</td>
+</tr>
+</table>
 
-     <ul class="cas">
-        <li     ng-repeat="cas in $root.currentTestCaseList"
-                class="listCas">
-		<a href="#!/case/{{cas.test_header_case_id}}">{{cas.name}}</a> 
-          <p> {{cas.id}}</p>
-        </li>
-      </ul>
-      
 
 </div>

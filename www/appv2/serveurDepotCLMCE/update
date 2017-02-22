@@ -1,0 +1,135 @@
+<?php
+/* 
+	Script de gestion des updates du courrielleur MCE.
+	--------------------------------------------------
+		Ce script est joué lorsqu'un courrielleur interroge pour savoir s'il existe un update pertinent.
+		Il recoit en entrée les caracteristiques du courrielleur qui interoge (version, os, ...)
+		Retourne un xml contenant le chemin vers le fichier mar d'update qu'il convient de passer.
+		Algorithme:
+			on commence par scanner les mar complets, s'il y en a un d'une version plus recente on le 
+			selectionne.
+			si pas de mar complet pertinent, on regarde s'il y a un mar partiel qui adresse la version 
+			du courrielleur qui interroge
+		Versionning:
+			pour eviter tout pb avec le numero de version tb, on considere que le courrielleur MCE est 
+			entierement défini par sa version + son build id.
+		Utilisation du repertoire de mar:
+			Lorsqu'on a un nouveau mar complet à distribuer:
+				effacer tout les fichiers precedents et mettre le mar complet. Il sera installé sur
+				tous les clients
+			Lorqu'on a un nouveau partiel à distribuer:
+				placer le partiel dans le repertoire sans toucher aux autres fichiers
+		Nommage des mar:
+	    		"CLMCE-version-build_id-update_patchType-build_target-update_lang.mar"
+			en cas de mar complet, la version et le build id sont ceux qui correspondent au mar
+			en cas de mar partiel, il faut indiquer la version et le build id des installations 
+			susceptibles de recevoir ce partiel, c'est à dire version et build id du mar complet de depart.
+			update_patchType = complete ou partial
+			build_target = version os
+			update_lang = fr
+			ATTENTION:
+				> S'il y a un " " ou un "-" ds une caracteristique (p ex 'Winnt 6.0-msvc'), 
+				remplacer par "_" pr la composition du nom 
+*/
+
+
+
+	include( 'config_update.php');
+
+
+	header("Content-type: text/xml");
+	echo '<?xml version="1.0"?>';
+	$update_host = $url_tb;
+
+	// emplacement des updates.
+	$updates_path = $mar_path;
+	
+	// Recuperation de parametres 
+	$url_params=explode("/",$_SERVER["REQUEST_URI"]);
+ 	$nbParam=count($url_params);
+	$i=0;	
+	for ($i=0;$i<$nbParam;$i++){
+	  $url_params[$i] = str_replace(" ","_",$url_params[$i]);
+	  $url_params[$i] = str_replace("-","_",$url_params[$i]);
+	}
+	$product=$url_params[$nbParam-10];
+	$version=$url_params[$nbParam-9];
+	$build_id=$url_params[$nbParam-8];
+	$build_target=$url_params[$nbParam-7];
+
+
+	//$locale=$url_params[7];
+	//$channel=$url_params[8];
+	//$os_version=$url_params[9];
+	//$dist=$url_params[10];
+	//$dist_version=$url_params[11];
+	//$filename=$url_params[12];
+	
+	// pas d'update si on ne trouve pas un mar qui matche 
+	$update = false;
+
+	//$update_detailsURL = "https://adefinir/tb-update10.html";
+	$update_lang = "fr";
+	
+
+	
+	if($product=="Thunderbird"){
+    	  //1/ recherche d'un mar complet plus recent que la version actuelle
+	  $update_file = null;
+	  $monMask = "$updates_path/*MCE*complet*.mar";
+	  $mesMarComplets = glob($monMask);//tri alpha par defaut
+	  $nbFiles = count($mesMarComplets);
+	  $cpt=$nbFiles;
+	  $fini = ($cpt==0);
+	  while (!$fini){// parcours en antialpha pour commencer par les + recents
+	    $cpt--;
+	    $update_file = $mesMarComplets[$cpt];
+	    $mesCaract = explode("-",$update_file);
+	    $nbCaract=count($mesCaract);
+	    if (count($mesCaract)==6){
+	      $marVersion = $mesCaract[1];
+	      $marBuildId = $mesCaract[2];
+	      $maTarget=$mesCaract[4];
+	      if ($build_target==$maTarget)
+	        if (($marVersion > $version) ||
+  		  ($marVersion == $version && $marBuildId>$build_id)){
+		    $fini=true;
+		    $update=true;
+		    $update_type = "major";
+		    $update_patchType="complete";
+		    $update_ver=$marVersion;
+	            $update_file_hash = hash_file("sha256", "$update_file");
+	            $update_file_size = filesize("$update_file");
+		    $dummy=explode("/",$update_file);
+		    $update_file=$dummy[count($dummy)-1];// Nom du fichier sans le chemin
+	        }    
+            }  
+	    if (($fini==false) && ($cpt==0)) $fini=true;
+	  }
+	  //2/ si pas de complet, recherche d'un mar partiel qui concernerait le poste qui interroge
+	  if (!$update){
+	    $update_patchType="partial";
+	    
+	    $update_file = "CLMCE-$version-$build_id-$update_patchType-$build_target-$update_lang.mar";
+	    if(is_readable("$updates_path/$update_file")){
+	      $update = true;	
+	      $update_type = "minor";
+	      $update_ver=$version;
+	      $update_file_hash = hash_file("sha256", "$updates_path/$update_file");
+	      $update_file_size = filesize("$updates_path/$update_file");
+	    }
+	  }
+          if ($update){
+	      echo "
+	      <updates>
+	        <update type='$update_type' version='$update_ver' extensionVersion='$update_ver' >
+	          <patch type='$update_patchType' URL='$update_host/$update_file' hashFunction='SHA256' hashValue='$update_file_hash' size='$update_file_size'/>
+	        </update>
+	      </updates>";
+  	  }
+	  else{
+ 	      echo "<updates></updates>";
+  	  }
+	}
+?>
+
