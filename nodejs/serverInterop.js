@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 var fs = require("fs");
 var pg = require("pg");
 var Promise = require('es6-promise').Promise;
-app.set('jwtTokenSecret','melissa');
+app.set('jwtTokenSecret','mysecret');
 
 var connectionString = process.env.DATABASE_URL;
 //var myServer="54.149.55.192";
@@ -33,8 +33,8 @@ var connectionString = process.env.DATABASE_URL;
 var port=process.env.PORT;
 var login=process.env.LOGINURL;
 var rand='12345';
-var secret='nuitdebout';
-var baseDiscourseRootUrl='forum.etalab.gouv.fr';
+var secret='mysecret';
+var baseDiscourseRootUrl='forr';
 var discourseRootUrl='https://'+baseDiscourseRootUrl;
 
 var api_key=process.env.API_KEY;
@@ -1308,7 +1308,7 @@ app.get('//getSSOLoginInfo', function (req, res) {
     else{
 */      
       console.log('sso:'+b64string);
-      console.log('ssodecodé:'+buf);
+      console.log('ssodecodÃ©:'+buf);
       var sbuf = buf.toString();
       var myDecode = querystring.parse(buf);
  //     console.log('parsing obj:'+querystring.parse('foo=2&fooa=3').toString());
